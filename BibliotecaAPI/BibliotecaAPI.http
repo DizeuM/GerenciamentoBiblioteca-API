@@ -1,0 +1,6 @@
+@BibliotecaAPI_HostAddress = http://localhost:5124
+
+GET {{BibliotecaAPI_HostAddress}}/
+Accept: application/json
+
+###
