@@ -116,3 +116,4 @@ C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\obj\
 C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\obj\Debug\net8.0\BibliotecaAPI.pdb
 C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\obj\Debug\net8.0\BibliotecaAPI.genruntimeconfig.cache
 C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\obj\Debug\net8.0\ref\BibliotecaAPI.dll
+C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\bin\Debug\net8.0\BCrypt.Net-Next.dll

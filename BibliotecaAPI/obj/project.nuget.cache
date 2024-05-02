@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "P8dmXbMRlBjMLFgoebYe52IRDeoWGvc6esenT85p+haDral1miSXTWqQI7nH7PrNOTMJwJ0iRneGfJlCckmnyQ==",
+  "dgSpecHash": "EEpnECzrA7gbz3vQp9vQnwwOzU2laTKhw3P4e+kkiGYuY7TckVX+iqkQ/xtIQyrBS6Yj1L5QLQS9cmFGQlfSGQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\mateusDizeu\\source\\repos\\GerenciamentoBiblioteca-API\\BibliotecaAPI\\BibliotecaAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
+    "C:\\Users\\mateusDizeu\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.4\\microsoft.aspnetcore.authentication.jwtbearer.8.0.4.nupkg.sha512",
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\8.0.4\\microsoft.aspnetcore.jsonpatch.8.0.4.nupkg.sha512",
