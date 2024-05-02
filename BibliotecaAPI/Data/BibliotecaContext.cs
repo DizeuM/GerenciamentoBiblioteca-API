@@ -10,4 +10,5 @@ public class BibliotecaContext : DbContext
     }
 
     public DbSet<Funcionario> Funcionarios { get; set; }
+    public DbSet<Livro> Livros { get; set; }
 }
