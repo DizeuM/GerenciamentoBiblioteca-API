@@ -1,8 +1,10 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BibliotecaAPI.Controllers;
 
+[Authorize]
 [Route("[controller]")]
 [ApiController]
 public class FuncionarioController : ControllerBase
