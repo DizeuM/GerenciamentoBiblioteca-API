@@ -12,4 +12,6 @@ public class BibliotecaContext : DbContext
     public DbSet<Funcionario> Funcionarios { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Livro> Livros { get; set; }
+    public DbSet<Exemplar> Exemplares { get; set; }
+    public DbSet<Emprestimo> Emprestimos { get; set; }
 }
