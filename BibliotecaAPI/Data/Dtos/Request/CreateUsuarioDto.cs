@@ -2,7 +2,7 @@
 
 namespace BibliotecaAPI.Data.Dtos.Request;
 
-public class CreateAndUpdateUsuarioDto
+public class CreateUsuarioDto
 {
     [Required]
     public string Nome { get; set; }
