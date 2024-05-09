@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Models;
 
@@ -26,4 +27,10 @@ public class Emprestimo
 
     [Required]
     public int Status { get; set; }
+
+    [JsonIgnore]
+    public Usuario Usuario { get; set; }
+
+    [JsonIgnore]
+    public Exemplar Exemplar { get; set; }
 }

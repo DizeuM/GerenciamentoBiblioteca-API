@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Models;
 
@@ -13,4 +14,9 @@ public class Exemplar
 
     [Required]
     public int Status { get; set; }
+
+    [JsonIgnore]
+    public Livro Livro { get; set; }
+
+    public virtual ICollection<Emprestimo> Emprestimos { get; set; }
 }

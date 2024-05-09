@@ -22,4 +22,6 @@ public class Usuario
     [Required]
     [StringLength(11)]
     public string Telefone { get; set; }
+
+    public virtual ICollection<Emprestimo> Emprestimos { get; set; }
 }

@@ -33,4 +33,7 @@ public class Livro
 
     [Required]
     public int Status { get; set; }
+
+    [JsonIgnore]
+    public virtual ICollection<Exemplar> Exemplares { get; set; }
 }
