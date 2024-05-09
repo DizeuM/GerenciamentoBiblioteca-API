@@ -8,5 +8,5 @@ public interface IEmprestimoService
     Task<ReadEmprestimoDto> CreateEmprestimo(CreateEmprestimoDto emprestimoDto, int funcionarioId);
     Task<IEnumerable<ReadEmprestimoDto>> GetEmprestimos();
     Task<ReadEmprestimoDto> GetEmprestimoById(int id);
-    Task UpdateEmprestimo(int id);
+    Task ReturnEmprestimo(int id);
 }

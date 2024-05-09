@@ -18,16 +18,32 @@ public class EmprestimoService : IEmprestimoService
         _mapper = mapper;
     }
 
+    public class NotFoundException : Exception
+    {
+        public NotFoundException() { }
+        public NotFoundException(string message) : base(message) { }
+        public NotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
     public async Task<ReadEmprestimoDto> CreateEmprestimo(CreateEmprestimoDto emprestimoDto, int funcionarioId)
     {
         var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == emprestimoDto.UsuarioId);
-        if (usuario == null) return null; //Deve retornar Usuario não encontrado.
+        if (usuario == null)
+        {
+            throw new NotFoundException("Usuário não encontrado.");
+        }
 
         int numEmprestimosUsuario = await _context.Emprestimos.CountAsync(e => e.UsuarioId == emprestimoDto.UsuarioId && (e.Status == 1 || e.Status == 3));
-        if (numEmprestimosUsuario >= 3) return null; //Deve retornar Limite de emprestimos do usuario atingido.
+        if (numEmprestimosUsuario >= 3)
+        {
+            throw new Exception("Limite de empréstimos do usuário atingido.");
+        }
 
         var exemplarDisponivel = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId && e.Status == 1);
-        if (exemplarDisponivel == null) return null; //Deve retornar Exemplar não disponivel para emprestimo.
+        if (exemplarDisponivel == null)
+        {
+            throw new Exception("Exemplar não disponível para empréstimo.");
+        }
 
         var emprestimo = _mapper.Map<Emprestimo>(emprestimoDto);
 
@@ -70,33 +86,25 @@ public class EmprestimoService : IEmprestimoService
     public async Task<ReadEmprestimoDto> GetEmprestimoById(int id)
     {
         var emprestimo = await _context.Emprestimos.FirstOrDefaultAsync(e => e.Id == id);
-
-        if (emprestimo == null) { return null; }
-
-        if (emprestimo.Status == 1 && DateTime.Now > emprestimo.DataPrevistaInicial)
+        if (emprestimo == null)
         {
-            emprestimo.Status = 3;
-            await _context.SaveChangesAsync();
+            throw new NotFoundException("Emprestimo não encontrado.");
         }
 
-        var emprestimoDto = _mapper.Map<ReadEmprestimoDto>(emprestimo);
-        return emprestimoDto;
-
+        return _mapper.Map<ReadEmprestimoDto>(emprestimo);
     }
 
-    public async Task UpdateEmprestimo(int id)
+    public async Task ReturnEmprestimo(int id)
     {
         var emprestimo = await _context.Emprestimos.FirstOrDefaultAsync(e => e.Id == id);
-        if (emprestimo == null) { } //Deve retornar Empréstimo não encontrado.
-
-        if (emprestimo.Status == 3) { } //Deve retornar Empréstimo atrasado e mostrar multa.
-
-        if (emprestimo.Status == 1 && DateTime.Now > emprestimo.DataPrevistaInicial)
+        if (emprestimo == null)
         {
-            emprestimo.Status = 3;
-            await _context.SaveChangesAsync();
+            throw new NotFoundException("Emprestimo não encontrado.");
+        }
 
-            //Deve retornar Empréstimo atrasado e mostrar multa
+        if (emprestimo.Status == 2)
+        {
+            throw new Exception("Emprestimo já foi entregue.");
         }
 
         emprestimo.Status = 2;
@@ -106,6 +114,5 @@ public class EmprestimoService : IEmprestimoService
         var exemplar = _context.Exemplares.FirstOrDefault(e => e.Id == emprestimo.ExemplarId);
         exemplar.Status = 1;
         await _context.SaveChangesAsync();
-
     }
 }
