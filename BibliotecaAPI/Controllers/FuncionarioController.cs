@@ -17,38 +17,33 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] CreateFuncionarioDto funcionarioDto)
+    public async Task<IActionResult> Post([FromBody] CreateFuncionarioDto funcionarioDto)
     {
-        var funcionario = _funcionarioService.CreateFuncionario(funcionarioDto);
-        return Created(string.Empty, _funcionarioService.GetFuncionarioDto(funcionario.Id));
+        var funcionarioDtoResponse = await _funcionarioService.CreateFuncionario(funcionarioDto);
+        if (funcionarioDtoResponse == null) { return BadRequest(); }
+        return Created(string.Empty, funcionarioDtoResponse);
+
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        var funcionariosDto = _funcionarioService.GetAllFuncionarios();
+        var funcionariosDto = await _funcionarioService.GetAllFuncionarios();
         return Ok(funcionariosDto);
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public async Task<IActionResult> Get(int id)
     {
-        var funcionarioDto = _funcionarioService.GetFuncionarioDto(id);
+        var funcionarioDto = await _funcionarioService.GetFuncionarioDto(id);
         if (funcionarioDto == null){return NotFound();}
         return Ok(funcionarioDto);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] UpdateFuncionarioDto funcionarioDto)
+    public async Task<IActionResult> Put(int id, [FromBody] UpdateFuncionarioDto funcionarioDto)
     {
-        _funcionarioService.UpdateFuncionario(id, funcionarioDto);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
-    {
-        _funcionarioService.DeleteFuncionario(id);
+        await _funcionarioService.UpdateFuncionario(id, funcionarioDto);
         return NoContent();
     }
 }

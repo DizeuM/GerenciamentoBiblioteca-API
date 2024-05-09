@@ -37,7 +37,7 @@ public class EmprestimoService : IEmprestimoService
         emprestimo.DataPrevistaInicial = DateTime.Now.AddDays(7);
 
         await _context.Emprestimos.AddAsync(emprestimo);
-        _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         var exemplar = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId);
         exemplar.Status = 2;

@@ -4,6 +4,7 @@ using BibliotecaAPI.Data;
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
 using BibliotecaAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class FuncionarioService : IFuncionarioService
 {
@@ -22,34 +23,34 @@ public class FuncionarioService : IFuncionarioService
         return hashSenha;
     }
 
-    public ReadFuncionarioDto CreateFuncionario(CreateFuncionarioDto funcionarioDto)
+    public async Task<ReadFuncionarioDto> CreateFuncionario(CreateFuncionarioDto funcionarioDto)
     {
         var funcionario = _mapper.Map<Funcionario>(funcionarioDto);
         funcionario.Senha = GenerateSenhaHash(funcionarioDto.Senha);
 
-        _context.Funcionarios.Add(funcionario);
-        _context.SaveChanges();
+        await _context.Funcionarios.AddAsync(funcionario);
+        await _context.SaveChangesAsync();
 
         return _mapper.Map<ReadFuncionarioDto>(funcionario);
     }
 
-    public IEnumerable<ReadFuncionarioDto> GetAllFuncionarios()
+    public async Task<IEnumerable<ReadFuncionarioDto>> GetAllFuncionarios()
     {
-        var funcionarios = _context.Funcionarios.ToList();
+        var funcionarios = await _context.Funcionarios.ToListAsync();
         return _mapper.Map<List<ReadFuncionarioDto>>(funcionarios);
     }
 
-    public ReadFuncionarioDto GetFuncionarioDto(int id)
+    public async Task<ReadFuncionarioDto> GetFuncionarioDto(int id)
     {
-        var funcionario = _context.Funcionarios.FirstOrDefault(f => f.Id == id);
+        var funcionario = await _context.Funcionarios.FirstOrDefaultAsync(f => f.Id == id);
         if (funcionario == null){return null;}
 
         return _mapper.Map<ReadFuncionarioDto>(funcionario);
     }
 
-    public void UpdateFuncionario(int id, UpdateFuncionarioDto funcionarioDto)
+    public async Task UpdateFuncionario(int id, UpdateFuncionarioDto funcionarioDto)
     {
-        var funcionario = _context.Funcionarios.FirstOrDefault(f => f.Id == id);
+        var funcionario = await _context.Funcionarios.FirstOrDefaultAsync(f => f.Id == id);
         if (funcionario == null)
         {
             throw new KeyNotFoundException("Funcionário não encontrado");
@@ -58,18 +59,6 @@ public class FuncionarioService : IFuncionarioService
         _mapper.Map(funcionarioDto, funcionario);
         funcionario.Senha = GenerateSenhaHash(funcionarioDto.Senha);
 
-        _context.SaveChanges();
-    }
-
-    public void DeleteFuncionario(int id)
-    {
-        var funcionario = _context.Funcionarios.FirstOrDefault(f => f.Id == id);
-        if (funcionario == null)
-        {
-            throw new KeyNotFoundException("Funcionário não encontrado");
-        }
-
-        _context.Funcionarios.Remove(funcionario);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }
