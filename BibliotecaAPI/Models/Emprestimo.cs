@@ -33,4 +33,7 @@ public class Emprestimo
 
     [JsonIgnore]
     public Exemplar Exemplar { get; set; }
+
+    [JsonIgnore]
+    public Multa Multa { get; set; }
 }

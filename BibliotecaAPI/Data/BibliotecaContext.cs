@@ -14,6 +14,7 @@ public class BibliotecaContext : DbContext
     public DbSet<Livro> Livros { get; set; }
     public DbSet<Exemplar> Exemplares { get; set; }
     public DbSet<Emprestimo> Emprestimos { get; set; }
+    public DbSet<Multa> Multas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,5 +29,9 @@ public class BibliotecaContext : DbContext
         modelBuilder.Entity<Emprestimo>()
             .HasOne(e => e.Exemplar)
             .WithMany(e => e.Emprestimos);
+
+        modelBuilder.Entity<Multa>()
+            .HasOne(e => e.Emprestimo)
+            .WithOne(e => e.Multa);
     }
 }
