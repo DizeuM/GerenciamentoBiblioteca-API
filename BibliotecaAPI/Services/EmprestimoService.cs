@@ -11,11 +11,13 @@ public class EmprestimoService : IEmprestimoService
 {
     private readonly BibliotecaContext _context;
     private readonly IMapper _mapper;
+    private readonly IMultaService _multaService;
 
-    public EmprestimoService(BibliotecaContext context, IMapper mapper)
+    public EmprestimoService(BibliotecaContext context, IMapper mapper, IMultaService multaService)
     {
         _context = context;
         _mapper = mapper;
+        _multaService = multaService;
     }
 
     public class NotFoundException : Exception
@@ -50,7 +52,7 @@ public class EmprestimoService : IEmprestimoService
         emprestimo.FuncionarioId = funcionarioId;
         emprestimo.Status = 1;
         emprestimo.DataEmprestimo = DateTime.Now;
-        emprestimo.DataPrevistaInicial = DateTime.Now.AddDays(7);
+        emprestimo.DataPrevistaInicial = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59);
 
         await _context.Emprestimos.AddAsync(emprestimo);
         await _context.SaveChangesAsync();
@@ -66,21 +68,7 @@ public class EmprestimoService : IEmprestimoService
     {
         var emprestimos = await _context.Emprestimos.ToListAsync();
 
-        var emprestimoDto = emprestimos.Select(emprestimo =>
-        {
-            if (emprestimo.Status == 1 && DateTime.Now > emprestimo.DataPrevistaInicial)
-            {
-                emprestimo.Status = 3;
-                _context.SaveChangesAsync();
-            }
-
-            var emprestimoDto = _mapper.Map<ReadEmprestimoDto>(emprestimo);
-
-            return emprestimoDto;
-
-        }).ToList();
-
-        return emprestimoDto;
+        return _mapper.Map<List<ReadEmprestimoDto>>(emprestimos);
     }
 
     public async Task<ReadEmprestimoDto> GetEmprestimoById(int id)
@@ -107,6 +95,11 @@ public class EmprestimoService : IEmprestimoService
             throw new Exception("Emprestimo já foi entregue.");
         }
 
+        if (emprestimo.Status == 3)
+        {
+            //throw new Exception("Multa pendente");
+        }
+
         emprestimo.Status = 2;
         emprestimo.DataDevolucao = DateTime.Now;
         await _context.SaveChangesAsync();
@@ -115,4 +108,19 @@ public class EmprestimoService : IEmprestimoService
         exemplar.Status = 1;
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateEmprestimosAtrasados()
+    {
+        var emprestimos = await _context.Emprestimos.ToListAsync();
+
+        foreach (var emprestimo in emprestimos)
+        {
+            if (emprestimo.Status == 1 && DateTime.Now > emprestimo.DataPrevistaInicial)
+            {
+                emprestimo.Status = 3;
+                await _context.SaveChangesAsync();
+            }
+        }
+    }
+
 }

@@ -79,4 +79,11 @@ public class EmprestimoController : ControllerBase
         }
     }
 
+    [HttpPut("AtualizarStatus/")]
+    public async Task<IActionResult> Put()
+    {
+        await _emprestimoService.UpdateEmprestimosAtrasados();
+        return NoContent();
+    }
+
 }
