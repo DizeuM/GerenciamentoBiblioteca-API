@@ -1,4 +1,5 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
+using BibliotecaAPI.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,31 +20,49 @@ public class FuncionarioController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CreateFuncionarioDto funcionarioDto)
     {
-        var funcionarioDtoResponse = await _funcionarioService.CreateFuncionario(funcionarioDto);
-        if (funcionarioDtoResponse == null) { return BadRequest(); }
-        return Created(string.Empty, funcionarioDtoResponse);
-
+        try
+        {
+            var funcionarioDtoResponse = await _funcionarioService.CreateFuncionario(funcionarioDto);
+            return Created(string.Empty, funcionarioDtoResponse);
+        }
+        catch (BadRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var funcionariosDto = await _funcionarioService.GetAllFuncionarios();
-        return Ok(funcionariosDto);
+        var funcionariosDtoResponse = await _funcionarioService.GetAllFuncionarios();
+        return Ok(funcionariosDtoResponse);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var funcionarioDto = await _funcionarioService.GetFuncionarioDto(id);
-        if (funcionarioDto == null){return NotFound();}
-        return Ok(funcionarioDto);
+        try
+        {
+            var funcionarioDtoResponse = await _funcionarioService.GetFuncionarioById(id);
+            return Ok(funcionarioDtoResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, [FromBody] UpdateFuncionarioDto funcionarioDto)
     {
-        await _funcionarioService.UpdateFuncionario(id, funcionarioDto);
-        return NoContent();
+        try
+        {
+            await _funcionarioService.UpdateFuncionario(id, funcionarioDto);
+            return NoContent();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

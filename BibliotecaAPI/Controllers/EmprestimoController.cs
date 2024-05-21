@@ -1,9 +1,10 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
+using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static BibliotecaAPI.Services.EmprestimoService;
 
 namespace BibliotecaAPI.Controllers;
 
@@ -22,11 +23,11 @@ public class EmprestimoController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CreateEmprestimoDto emprestimoDto)
     {
-        var dadosTokenFuncionario = HttpContext.User.Identity as ClaimsIdentity;
-        int funcionarioId = Int32.Parse(dadosTokenFuncionario.FindFirst("FuncionarioId").Value);
-
         try
         {
+            var dadosTokenFuncionario = HttpContext.User.Identity as ClaimsIdentity;
+            int funcionarioId = Int32.Parse(dadosTokenFuncionario.FindFirst("FuncionarioId").Value);
+
             var emprestimoDtoResponse = await _emprestimoService.CreateEmprestimo(emprestimoDto, funcionarioId);
             return Created(string.Empty, emprestimoDtoResponse);
         }
@@ -34,7 +35,7 @@ public class EmprestimoController : ControllerBase
         {
             return NotFound(ex.Message);
         }
-        catch (Exception ex)
+        catch (BadRequestException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -43,8 +44,8 @@ public class EmprestimoController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var emprestimoDtoResponse = await _emprestimoService.GetEmprestimos();
-        return Ok(emprestimoDtoResponse);
+        var emprestimosDtoResponse = await _emprestimoService.GetEmprestimos();
+        return Ok(emprestimosDtoResponse);
     }
 
     [HttpGet("{id}")]
@@ -73,7 +74,7 @@ public class EmprestimoController : ControllerBase
         {
             return NotFound(ex.Message);
         }
-        catch (Exception ex)
+        catch (BadRequestException ex)
         {
             return BadRequest(ex.Message);
         }

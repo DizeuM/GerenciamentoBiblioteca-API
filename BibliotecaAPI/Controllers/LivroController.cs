@@ -2,6 +2,7 @@
 using BibliotecaAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using BibliotecaAPI.Exceptions;
 
 namespace BibliotecaAPI.Controllers;
 
@@ -20,37 +21,63 @@ public class LivroController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CreateLivroDto livroDto)
     {
-        var response = await _livroService.CreateLivro(livroDto);
-        return Created(string.Empty, response);
+        try
+        {
+            var livroDtoResponse = await _livroService.CreateLivro(livroDto);
+            return Created(string.Empty, livroDtoResponse);
+        }
+        catch (BadRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var livros = await _livroService.GetLivros();
-        return Ok(livros);
+        var livrosDtoResponse = await _livroService.GetLivros();
+        return Ok(livrosDtoResponse);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var livro = await _livroService.GetLivroById(id);
-        if (livro == null) return NotFound();
-
-        return Ok(livro);
+        try
+        {
+            var livroDtoResponse = await _livroService.GetLivroById(id);
+            return Ok(livroDtoResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, [FromBody] UpdateLivroDto livroDto)
     {
-        await _livroService.UpdateLivro(id, livroDto);
-        return NoContent();
+        try
+        {
+            await _livroService.UpdateLivro(id, livroDto);
+            return NoContent();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _livroService.DeleteLivro(id);
-        return NoContent();
+        try
+        {
+            await _livroService.DeleteLivro(id);
+            return NoContent();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

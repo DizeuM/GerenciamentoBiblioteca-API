@@ -4,6 +4,8 @@ using BibliotecaAPI.Data.Dtos.Response;
 using BibliotecaAPI.Data;
 using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using BibliotecaAPI.Exceptions;
+using BibliotecaAPI.Enums;
 
 namespace BibliotecaAPI.Services;
 
@@ -11,54 +13,56 @@ public class EmprestimoService : IEmprestimoService
 {
     private readonly BibliotecaContext _context;
     private readonly IMapper _mapper;
+    private readonly IUsuarioService _usuarioService;
     private readonly IMultaService _multaService;
 
-    public EmprestimoService(BibliotecaContext context, IMapper mapper, IMultaService multaService)
+    public EmprestimoService(BibliotecaContext context, IMapper mapper, IUsuarioService usuarioService, IMultaService multaService)
     {
         _context = context;
         _mapper = mapper;
+        _usuarioService = usuarioService;
         _multaService = multaService;
     }
 
-    public class NotFoundException : Exception
+    public async Task<Emprestimo> GetEmprestimoByIdOrThrowError(int id)
     {
-        public NotFoundException() { }
-        public NotFoundException(string message) : base(message) { }
-        public NotFoundException(string message, Exception innerException) : base(message, innerException) { }
+        var emprestimo = await _context.Emprestimos.FirstOrDefaultAsync(e => e.Id == id);
+        if (emprestimo == null)
+        {
+            throw new NotFoundException("Emprestimo não encontrado.");
+        }
+
+        return emprestimo;
     }
 
     public async Task<ReadEmprestimoDto> CreateEmprestimo(CreateEmprestimoDto emprestimoDto, int funcionarioId)
     {
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == emprestimoDto.UsuarioId);
-        if (usuario == null)
-        {
-            throw new NotFoundException("Usuário não encontrado.");
-        }
+        var usuario = await _usuarioService.GetUsuarioByIdOrThrowError(emprestimoDto.UsuarioId);
 
-        int numEmprestimosUsuario = await _context.Emprestimos.CountAsync(e => e.UsuarioId == emprestimoDto.UsuarioId && (e.Status == 1 || e.Status == 3));
+        int numEmprestimosUsuario = usuario.Emprestimos.Count(e => e.Status == EmprestimoStatus.EmAndamento || e.Status == EmprestimoStatus.Atrasado);
         if (numEmprestimosUsuario >= 3)
         {
             throw new Exception("Limite de empréstimos do usuário atingido.");
         }
 
-        var exemplarDisponivel = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId && e.Status == 1);
+        var exemplarDisponivel = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId && e.Status == ExemplarStatus.Disponivel);
         if (exemplarDisponivel == null)
         {
-            throw new Exception("Exemplar não disponível para empréstimo.");
+            throw new BadRequestException("Exemplar não disponível para empréstimo.");
         }
 
         var emprestimo = _mapper.Map<Emprestimo>(emprestimoDto);
 
         emprestimo.FuncionarioId = funcionarioId;
-        emprestimo.Status = 1;
+        emprestimo.Status = EmprestimoStatus.EmAndamento;
         emprestimo.DataEmprestimo = DateTime.Now;
         emprestimo.DataPrevistaInicial = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59);
 
         await _context.Emprestimos.AddAsync(emprestimo);
-        await _context.SaveChangesAsync();
 
         var exemplar = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId);
-        exemplar.Status = 2;
+        exemplar.Status = ExemplarStatus.Emprestado;
+
         await _context.SaveChangesAsync();
 
         return _mapper.Map<ReadEmprestimoDto>(emprestimo);
@@ -73,39 +77,34 @@ public class EmprestimoService : IEmprestimoService
 
     public async Task<ReadEmprestimoDto> GetEmprestimoById(int id)
     {
-        var emprestimo = await _context.Emprestimos.FirstOrDefaultAsync(e => e.Id == id);
-        if (emprestimo == null)
-        {
-            throw new NotFoundException("Emprestimo não encontrado.");
-        }
+        var emprestimo = await GetEmprestimoByIdOrThrowError(id);
 
         return _mapper.Map<ReadEmprestimoDto>(emprestimo);
     }
 
     public async Task ReturnEmprestimo(int id)
     {
-        var emprestimo = await _context.Emprestimos.FirstOrDefaultAsync(e => e.Id == id);
-        if (emprestimo == null)
+        var emprestimo = await GetEmprestimoByIdOrThrowError(id);
+
+        if (emprestimo.Status == EmprestimoStatus.Devolvido)
         {
-            throw new NotFoundException("Emprestimo não encontrado.");
+            throw new BadRequestException("Emprestimo já foi entregue.");
         }
 
-        if (emprestimo.Status == 2)
-        {
-            throw new Exception("Emprestimo já foi entregue.");
-        }
+        var exemplar = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimo.ExemplarId);
+        exemplar.Status = ExemplarStatus.Disponivel;
 
-        if (emprestimo.Status == 3)
-        {
-            //throw new Exception("Multa pendente");
-        }
-
-        emprestimo.Status = 2;
         emprestimo.DataDevolucao = DateTime.Now;
-        await _context.SaveChangesAsync();
 
-        var exemplar = _context.Exemplares.FirstOrDefault(e => e.Id == emprestimo.ExemplarId);
-        exemplar.Status = 1;
+        if (emprestimo.Status == EmprestimoStatus.Atrasado)
+        {
+            emprestimo.Status = EmprestimoStatus.Devolvido;
+            await _context.SaveChangesAsync();
+
+            throw new BadRequestException("Multa de pendente.");
+        }
+
+        emprestimo.Status = EmprestimoStatus.Devolvido;
         await _context.SaveChangesAsync();
     }
 
@@ -115,9 +114,9 @@ public class EmprestimoService : IEmprestimoService
 
         foreach (var emprestimo in emprestimos)
         {
-            if (emprestimo.Status == 1 && DateTime.Now > emprestimo.DataPrevistaInicial)
+            if (emprestimo.Status == EmprestimoStatus.EmAndamento && DateTime.Now > emprestimo.DataPrevistaInicial)
             {
-                emprestimo.Status = 3;
+                emprestimo.Status = EmprestimoStatus.Atrasado;
                 await _context.SaveChangesAsync();
             }
         }

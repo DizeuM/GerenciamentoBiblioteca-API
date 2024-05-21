@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BibliotecaAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Data.Dtos.Request;
 
@@ -15,4 +16,7 @@ public class UpdateFuncionarioDto
     [Required]
     [MinLength(6)]
     public string Senha { get; set; }
+
+    [Required]
+    public FuncionarioStatus Status { get; set; }
 }

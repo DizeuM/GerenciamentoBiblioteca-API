@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BibliotecaAPI.Enums;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Models;
@@ -32,7 +33,7 @@ public class Livro
     public float Valor { get; set; }
 
     [Required]
-    public int Status { get; set; }
+    public LivroStatus Status { get; set; }
 
     [JsonIgnore]
     public virtual ICollection<Exemplar> Exemplares { get; set; }

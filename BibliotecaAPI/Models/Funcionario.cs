@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BibliotecaAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Models;
 
@@ -26,4 +27,7 @@ public class Funcionario
     [Required]
     [MinLength(6)]
     public string Senha { get; set; }
+
+    [Required]
+    public FuncionarioStatus Status { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿using BibliotecaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static BibliotecaAPI.Services.MultaService;
+using BibliotecaAPI.Exceptions;
 
 namespace BibliotecaAPI.Controllers;
 

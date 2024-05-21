@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BibliotecaAPI.Enums;
 
 namespace BibliotecaAPI.Data.Dtos.Response;
 
@@ -11,5 +11,5 @@ public class ReadEmprestimoDto
     public DateTime DataEmprestimo { get; set; }
     public DateTime DataPrevistaInicial { get; set; }
     public DateTime? DataDevolucao { get; set; }
-    public int Status { get; set; }
+    public EmprestimoStatus Status { get; set; }
 }

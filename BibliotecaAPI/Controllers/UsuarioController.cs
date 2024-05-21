@@ -1,4 +1,5 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
+using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,38 +21,64 @@ public class UsuarioController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CreateUsuarioDto usuarioDto)
     { 
-        var usuarioDtoResponse = await _usuarioService.CreateUsuario(usuarioDto);
-        if (usuarioDtoResponse == null) { return BadRequest(); }
-        return Created(string.Empty, usuarioDtoResponse);
+        try
+        {
+            var usuarioDtoResponse = await _usuarioService.CreateUsuario(usuarioDto);
+            return Created(string.Empty, usuarioDtoResponse);
+        }
+        catch (BadRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var usuariosDto = await _usuarioService.GetAllUsuarios();
-        return Ok(usuariosDto);
+        var usuariosDtoResponse = await _usuarioService.GetAllUsuarios();
+        return Ok(usuariosDtoResponse);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var usuariosDto = await _usuarioService.GetUsuarioById(id);
-        if (usuariosDto == null) { return NotFound(); }
-        return Ok(usuariosDto);
+        try
+        {
+            var usuarioDtoResponse = await _usuarioService.GetUsuarioById(id);
+            return Ok(usuarioDtoResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, [FromBody] UpdateUsuarioDto usuarioDto)
     {
-        await _usuarioService.UpdateUsuario(id, usuarioDto);
-        return NoContent();
+        try
+        {
+            await _usuarioService.UpdateUsuario(id, usuarioDto);
+            return NoContent();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _usuarioService.DeleteUsuario(id);
-        return NoContent();
+        try
+        {
+            await _usuarioService.DeleteUsuario(id);
+            return NoContent();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

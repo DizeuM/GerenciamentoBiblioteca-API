@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BibliotecaAPI.Enums;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Models;
@@ -21,7 +22,7 @@ public class Multa
     public DateTime? FimMulta { get; set; }
 
     [Required]
-    public int Status { get; set; }
+    public MultaStatus Status { get; set; }
 
     [JsonIgnore]
     public Emprestimo Emprestimo { get; set; }

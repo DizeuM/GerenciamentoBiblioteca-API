@@ -1,4 +1,6 @@
-﻿namespace BibliotecaAPI.Data.Dtos.Response;
+﻿using BibliotecaAPI.Enums;
+
+namespace BibliotecaAPI.Data.Dtos.Response;
 
 public class ReadFuncionarioDto
 {
@@ -7,4 +9,5 @@ public class ReadFuncionarioDto
     public string Cpf { get; set; }
     public string Email { get; set; }
     public string Telefone { get; set; }
+    public FuncionarioStatus Status { get; set; }  
 }

@@ -3,6 +3,8 @@ using BibliotecaAPI.Data.Dtos.Response;
 using BibliotecaAPI.Data;
 using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using BibliotecaAPI.Exceptions;
+using BibliotecaAPI.Enums;
 
 namespace BibliotecaAPI.Services;
 
@@ -15,13 +17,6 @@ public class MultaService : IMultaService
     {
         _context = context;
         _mapper = mapper;
-    }
-
-    public class NotFoundException : Exception
-    {
-        public NotFoundException() { }
-        public NotFoundException(string message) : base(message) { }
-        public NotFoundException(string message, Exception innerException) : base(message, innerException) { }
     }
 
     public async Task<IEnumerable<ReadMultaDto>> GetMultas()
@@ -43,7 +38,7 @@ public class MultaService : IMultaService
 
     public async Task CreateAndUpdateMultas()
     {
-        var emprestimosAtrasados = await _context.Emprestimos.Include(e => e.Exemplar.Livro).Where(e => e.Status == 3).ToListAsync();
+        var emprestimosAtrasados = await _context.Emprestimos.Include(e => e.Exemplar.Livro).Where(e => e.Status == EmprestimoStatus.Atrasado).ToListAsync();
 
         foreach (var emprestimo in emprestimosAtrasados)
         {
@@ -73,7 +68,7 @@ public class MultaService : IMultaService
                 novaMulta.EmprestimoId = emprestimo.Id;
                 novaMulta.Valor = valorMulta;
                 novaMulta.InicioMulta = emprestimo.DataPrevistaInicial.AddSeconds(1);
-                novaMulta.Status = 1;
+                novaMulta.Status = MultaStatus.Pendente;
 
                 _context.Multas.Add(novaMulta);
             }
@@ -94,16 +89,16 @@ public class MultaService : IMultaService
             throw new NotFoundException("Multa não encontrada.");
         }
 
-        if (multa.Emprestimo.Status == 2)
+        if (multa.Emprestimo.Status == EmprestimoStatus.Devolvido)
         {
             multa.FimMulta = DateTime.Now;
-            multa.Status = 2;
+            multa.Status = MultaStatus.Paga;
             _context.SaveChanges();
         }
         
         else
         {
-            throw new Exception("Emprestimo em aberto.");
+            throw new BadRequestException("Emprestimo em aberto.");
         }
     }
 
