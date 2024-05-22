@@ -42,7 +42,7 @@ public class EmprestimoService : IEmprestimoService
         int numEmprestimosUsuario = usuario.Emprestimos.Count(e => e.Status == EmprestimoStatus.EmAndamento || e.Status == EmprestimoStatus.Atrasado);
         if (numEmprestimosUsuario >= 3)
         {
-            throw new Exception("Limite de empréstimos do usuário atingido.");
+            throw new BadRequestException("Limite de empréstimos do usuário atingido.");
         }
 
         var exemplarDisponivel = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId && e.Status == ExemplarStatus.Disponivel);
@@ -101,7 +101,7 @@ public class EmprestimoService : IEmprestimoService
             emprestimo.Status = EmprestimoStatus.Devolvido;
             await _context.SaveChangesAsync();
 
-            throw new BadRequestException("Multa de pendente.");
+            throw new Exception("Multa de pendente.");
         }
 
         emprestimo.Status = EmprestimoStatus.Devolvido;

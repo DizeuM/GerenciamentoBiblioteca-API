@@ -69,6 +69,7 @@ public class MultaService : IMultaService
                 novaMulta.Valor = valorMulta;
                 novaMulta.InicioMulta = emprestimo.DataPrevistaInicial.AddSeconds(1);
                 novaMulta.Status = MultaStatus.Pendente;
+                novaMulta.UsuarioId = emprestimo.UsuarioId;
 
                 _context.Multas.Add(novaMulta);
             }
@@ -83,7 +84,7 @@ public class MultaService : IMultaService
 
     public async Task PagarMulta(int id)
     {
-        var multa = _context.Multas.Include(m => m.Emprestimo.Usuario).FirstOrDefault(e => e.Id == id);
+        var multa = await _context.Multas.Include(m => m.Emprestimo.Usuario).FirstOrDefaultAsync(e => e.Id == id);
         if (multa == null) 
         {
             throw new NotFoundException("Multa não encontrada.");
@@ -93,7 +94,7 @@ public class MultaService : IMultaService
         {
             multa.FimMulta = DateTime.Now;
             multa.Status = MultaStatus.Paga;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         
         else

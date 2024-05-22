@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BibliotecaAPI.Data.Dtos.Response;
+﻿namespace BibliotecaAPI.Data.Dtos.Response;
 
 public class ReadMultaDto
 {

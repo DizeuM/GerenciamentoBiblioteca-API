@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Models;
 
@@ -24,4 +25,6 @@ public class Usuario
     public string Telefone { get; set; }
 
     public virtual ICollection<Emprestimo> Emprestimos { get; set; }
+
+    public virtual ICollection<Multa> Multas { get; set; }
 }

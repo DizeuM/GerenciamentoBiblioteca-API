@@ -31,7 +31,11 @@ public class BibliotecaContext : DbContext
             .WithMany(e => e.Emprestimos);
 
         modelBuilder.Entity<Multa>()
-            .HasOne(e => e.Emprestimo)
+            .HasOne(m => m.Emprestimo)
             .WithOne(e => e.Multa);
+
+        modelBuilder.Entity<Multa>()
+              .HasOne(m => m.Usuario)
+              .WithMany(u => u.Multas);
     }
 }

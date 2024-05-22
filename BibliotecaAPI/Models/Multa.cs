@@ -14,6 +14,9 @@ public class Multa
     public int EmprestimoId { get; set; }
 
     [Required]
+    public int UsuarioId { get; set; }
+
+    [Required]
     public double Valor { get; set; }
 
     [Required]
@@ -26,4 +29,7 @@ public class Multa
 
     [JsonIgnore]
     public Emprestimo Emprestimo { get; set; }
+
+    [JsonIgnore]
+    public Usuario Usuario { get; set; }
 }

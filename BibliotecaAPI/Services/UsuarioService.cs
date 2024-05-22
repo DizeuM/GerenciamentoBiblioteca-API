@@ -20,7 +20,7 @@ public class UsuarioService : IUsuarioService
     }
     public async Task<Usuario> GetUsuarioByIdOrThrowError(int id)
     {
-        var usuario = await _context.Usuarios.Include(u => u.Emprestimos).FirstOrDefaultAsync(u => u.Id == id);
+        var usuario = await _context.Usuarios.Include(u => u.Emprestimos).Include(u => u.Multas).FirstOrDefaultAsync(u => u.Id == id);
         if (usuario == null)
         {
             throw new NotFoundException("Usuario não encontrado");
@@ -41,7 +41,7 @@ public class UsuarioService : IUsuarioService
 
     public async Task<IEnumerable<ReadUsuarioDto>> GetAllUsuarios()
     {
-        var usuarios = await _context.Usuarios.Include(u => u.Emprestimos).ToListAsync();
+        var usuarios = await _context.Usuarios.Include(u => u.Emprestimos).Include(u => u.Multas).ToListAsync();
 
         return _mapper.Map<List<ReadUsuarioDto>>(usuarios);
     }

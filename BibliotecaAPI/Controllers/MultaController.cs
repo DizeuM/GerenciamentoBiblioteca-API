@@ -65,7 +65,7 @@ public class MultaController : ControllerBase
         {
             return NotFound(ex.Message);
         }
-        catch (Exception ex)
+        catch (BadRequestException ex)
         {
             return BadRequest(ex.Message);
         }

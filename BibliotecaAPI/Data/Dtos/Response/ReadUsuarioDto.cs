@@ -7,5 +7,6 @@ public class ReadUsuarioDto
     public string Cpf { get; set; }
     public string Email { get; set; }
     public string Telefone { get; set; }
-    public List<int>? Emprestimos { get; set; }
+    public List<int>? IdsEmprestimos { get; set; }
+    public List<int>? IdsMultas { get; set; }
 }

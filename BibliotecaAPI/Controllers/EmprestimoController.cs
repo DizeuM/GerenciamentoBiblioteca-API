@@ -2,7 +2,6 @@
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -74,9 +73,9 @@ public class EmprestimoController : ControllerBase
         {
             return NotFound(ex.Message);
         }
-        catch (BadRequestException ex)
+        catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return Ok(ex.Message);
         }
     }
 
