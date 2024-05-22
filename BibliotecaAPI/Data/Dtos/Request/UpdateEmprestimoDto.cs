@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BibliotecaAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Data.Dtos.Request;
 
 public class UpdateEmprestimoDto
 {
     [Required]
-    public int Status { get; set; }
+    public EmprestimoStatus Status { get; set; }
 }

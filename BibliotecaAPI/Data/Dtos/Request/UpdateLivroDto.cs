@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BibliotecaAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Data.Dtos.Request;
 
@@ -26,5 +27,5 @@ public class UpdateLivroDto
     public float Valor { get; set; }
 
     [Required]
-    public int Status { get; set; }
+    public LivroStatus Status { get; set; }
 }

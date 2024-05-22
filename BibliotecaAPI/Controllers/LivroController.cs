@@ -32,6 +32,13 @@ public class LivroController : ControllerBase
         }
     }
 
+    [HttpGet("Atributos/")]
+    public async Task<IActionResult> GetByAttributes([FromQuery] SearchLivroDto livroDto)
+    {
+        var livrosDtoResponse = await _livroService.SearchLivroByAttributes(livroDto);
+        return Ok(livrosDtoResponse);
+    }
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {

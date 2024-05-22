@@ -21,7 +21,7 @@ public class LivroService : ILivroService
     }
     public async Task<Livro> GetLivroByIdOrThrowError(int id)
     {
-        var livro = await _context.Livros.FirstOrDefaultAsync(livro => livro.Id == id);
+        var livro = await _context.Livros.Include(e => e.Exemplares).FirstOrDefaultAsync(livro => livro.Id == id);
         if (livro == null)
         {
             throw new NotFoundException("Livro não encontrado");
@@ -42,18 +42,84 @@ public class LivroService : ILivroService
         return _mapper.Map<ReadLivroDto>(livro);
     }
 
+    public async Task<IEnumerable<ReadLivroDto>> SearchLivroByAttributes(SearchLivroDto livroDto)
+    {
+        var query = _context.Livros.Include(e => e.Exemplares).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(livroDto.Nome))
+        {
+            query = query.Where(l => l.Nome.ToLower().Contains(livroDto.Nome.ToLower().Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(livroDto.Autor))
+        {
+            query = query.Where(l => l.Autor.ToLower().Contains(livroDto.Autor.ToLower().Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(livroDto.Editora))
+        {
+            query = query.Where(l => l.Editora.ToLower().Contains(livroDto.Editora.ToLower().Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(livroDto.Edicao))
+        {
+            query = query.Where(l => l.Edicao.ToLower().Contains(livroDto.Edicao.ToLower().Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(livroDto.Genero))
+        {
+            query = query.Where(l => l.Genero.ToLower() == livroDto.Genero.ToLower().Trim());
+        }
+
+        if (livroDto.Status != null)
+        {
+            query = query.Where(l => l.Status == livroDto.Status);
+        }
+
+        var livros = await query.ToListAsync();
+
+        var livrosDto = livros.Select(livro =>
+        {
+            var livroDto = _mapper.Map<ReadLivroDto>(livro);
+
+            var qntExemplarDisponivel = livro.Exemplares.Where(e => e.Status == ExemplarStatus.Disponivel).Count();
+            livroDto.QntExemplarDisponivel = qntExemplarDisponivel;
+
+            return livroDto;
+
+        }).ToList();
+
+        return livrosDto;
+    }
+
     public async Task<IEnumerable<ReadLivroDto>> GetLivros()
     {
-        var livros = await _context.Livros.ToListAsync();
+        var livros = await _context.Livros.Include(e => e.Exemplares).ToListAsync();
 
-        return _mapper.Map<List<ReadLivroDto>>(_context.Livros);
+        var livrosDto = livros.Select(livro =>
+        {
+            var livroDto = _mapper.Map<ReadLivroDto>(livro);
+
+            var qntExemplarDisponivel = livro.Exemplares.Where(e => e.Status == ExemplarStatus.Disponivel).Count();
+            livroDto.QntExemplarDisponivel = qntExemplarDisponivel;
+
+            return livroDto;
+
+        }).ToList();
+
+        return livrosDto;
     }
 
     public async Task<ReadLivroDto> GetLivroById(int id)
     {
         var livro = await GetLivroByIdOrThrowError(id);
 
-        return _mapper.Map<ReadLivroDto>(livro);
+        var livroDto = _mapper.Map<ReadLivroDto>(livro);
+
+        var qntExemplarDisponivel = livro.Exemplares.Where(e => e.Status == ExemplarStatus.Disponivel).Count();
+        livroDto.QntExemplarDisponivel = qntExemplarDisponivel;
+
+        return livroDto;
     }
 
     public async Task UpdateLivro(int id, UpdateLivroDto livroDto)
