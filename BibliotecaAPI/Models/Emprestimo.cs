@@ -23,7 +23,8 @@ public class Emprestimo
     public DateTime DataEmprestimo { get; set; }
 
     [Required]
-    public DateTime DataPrevistaInicial { get; set; }
+    public DateTime DataLimiteInicial { get; set; }
+
     public DateTime? DataDevolucao { get; set; }
 
     [Required]
@@ -37,4 +38,7 @@ public class Emprestimo
 
     [JsonIgnore]
     public Multa Multa { get; set; }
+
+    [JsonIgnore]
+    public virtual ICollection<Renovacao> Renovacoes { get; set; }
 }
