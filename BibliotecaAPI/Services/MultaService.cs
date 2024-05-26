@@ -38,13 +38,22 @@ public class MultaService : IMultaService
 
     public async Task CreateAndUpdateMultas()
     {
-        var emprestimosAtrasados = await _context.Emprestimos.Include(e => e.Exemplar.Livro).Where(e => e.Status == EmprestimoStatus.Atrasado).ToListAsync();
+        var emprestimosAtrasados = await _context.Emprestimos.Include(e => e.Exemplar.Livro).Include(e => e.Renovacoes).Where(e => e.Status == EmprestimoStatus.Atrasado).ToListAsync();
 
         foreach (var emprestimo in emprestimosAtrasados)
         {
+            var dataLimite = emprestimo.DataLimiteInicial;
+
+            var renovacao = emprestimo.Renovacoes.LastOrDefault();
+
+            if (renovacao != null)
+            {
+                dataLimite = renovacao.DataLimiteNova;
+            }
+
             int diasUteisAtrasados = 0;
 
-            for (var dia = emprestimo.DataLimiteInicial.AddSeconds(1).Date; dia <= DateTime.Now.Date; dia = dia.AddDays(1))
+            for (var dia = dataLimite.AddSeconds(1).Date; dia <= DateTime.Now.Date; dia = dia.AddDays(1))
             {
                 if (dia.DayOfWeek != DayOfWeek.Saturday && dia.DayOfWeek != DayOfWeek.Sunday)
                 {
@@ -67,7 +76,7 @@ public class MultaService : IMultaService
 
                 novaMulta.EmprestimoId = emprestimo.Id;
                 novaMulta.Valor = valorMulta;
-                novaMulta.InicioMulta = emprestimo.DataLimiteInicial.AddSeconds(1);
+                novaMulta.InicioMulta = dataLimite.AddSeconds(1);
                 novaMulta.Status = MultaStatus.Pendente;
                 novaMulta.UsuarioId = emprestimo.UsuarioId;
 

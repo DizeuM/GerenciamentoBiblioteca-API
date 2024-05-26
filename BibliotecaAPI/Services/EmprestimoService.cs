@@ -40,6 +40,12 @@ public class EmprestimoService : IEmprestimoService
     {
         var usuario = await _usuarioService.GetUsuarioByIdOrThrowError(emprestimoDto.UsuarioId);
 
+        int numMultasUsuario = usuario.Multas.Count(m => m.Status == MultaStatus.Pendente);
+        if (numMultasUsuario > 0)
+        {
+            throw new BadRequestException("Usuário tem multas pendentes.");
+        }
+
         int numEmprestimosUsuario = usuario.Emprestimos.Count(e => e.Status == EmprestimoStatus.EmAndamento || e.Status == EmprestimoStatus.Atrasado);
         if (numEmprestimosUsuario >= 3)
         {
