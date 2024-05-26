@@ -44,7 +44,7 @@ public class MultaService : IMultaService
         {
             int diasUteisAtrasados = 0;
 
-            for (var dia = emprestimo.DataPrevistaInicial.AddSeconds(1).Date; dia <= DateTime.Now.Date; dia = dia.AddDays(1))
+            for (var dia = emprestimo.DataLimiteInicial.AddSeconds(1).Date; dia <= DateTime.Now.Date; dia = dia.AddDays(1))
             {
                 if (dia.DayOfWeek != DayOfWeek.Saturday && dia.DayOfWeek != DayOfWeek.Sunday)
                 {
@@ -67,7 +67,7 @@ public class MultaService : IMultaService
 
                 novaMulta.EmprestimoId = emprestimo.Id;
                 novaMulta.Valor = valorMulta;
-                novaMulta.InicioMulta = emprestimo.DataPrevistaInicial.AddSeconds(1);
+                novaMulta.InicioMulta = emprestimo.DataLimiteInicial.AddSeconds(1);
                 novaMulta.Status = MultaStatus.Pendente;
                 novaMulta.UsuarioId = emprestimo.UsuarioId;
 

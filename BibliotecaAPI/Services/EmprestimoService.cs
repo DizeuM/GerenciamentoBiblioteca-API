@@ -26,7 +26,8 @@ public class EmprestimoService : IEmprestimoService
 
     public async Task<Emprestimo> GetEmprestimoByIdOrThrowError(int id)
     {
-        var emprestimo = await _context.Emprestimos.FirstOrDefaultAsync(e => e.Id == id);
+        var emprestimo = await _context.Emprestimos.Include(e => e.Renovacoes).FirstOrDefaultAsync(e => e.Id == id);
+
         if (emprestimo == null)
         {
             throw new NotFoundException("Emprestimo não encontrado.");
@@ -110,14 +111,35 @@ public class EmprestimoService : IEmprestimoService
 
     public async Task UpdateEmprestimosAtrasados()
     {
-        var emprestimos = await _context.Emprestimos.ToListAsync();
+        var emprestimos = await _context.Emprestimos.Include(e => e.Renovacoes).ToListAsync();
 
         foreach (var emprestimo in emprestimos)
         {
-            if (emprestimo.Status == EmprestimoStatus.EmAndamento && DateTime.Now > emprestimo.DataPrevistaInicial)
+            if (emprestimo.Status == EmprestimoStatus.EmAndamento && DateTime.Now > emprestimo.DataLimiteInicial)
             {
                 emprestimo.Status = EmprestimoStatus.Atrasado;
                 await _context.SaveChangesAsync();
+                continue;
+            }
+
+            if (emprestimo.Status == EmprestimoStatus.Renovado)
+            {
+                var renovacao = emprestimo.Renovacoes.FirstOrDefault(r => r.Status == RenovacaoStatus.Ativo);
+
+                if (renovacao == null)
+                {
+                    emprestimo.Status = EmprestimoStatus.Atrasado;
+                }
+
+                if (renovacao.Status == RenovacaoStatus.Ativo && DateTime.Now > renovacao.DataLimiteNova)
+                {
+                    renovacao.Status = RenovacaoStatus.Expirado;
+
+                    emprestimo.Status = EmprestimoStatus.Atrasado;
+                }
+
+                await _context.SaveChangesAsync();
+                continue;
             }
         }
     }
