@@ -23,7 +23,7 @@ public class UsuarioService : IUsuarioService
         var usuario = await _context.Usuarios.Include(u => u.Emprestimos).Include(u => u.Multas).FirstOrDefaultAsync(u => u.Id == id);
         if (usuario == null)
         {
-            throw new NotFoundException("Usuario não encontrado");
+            throw new NotFoundException("Usuario não encontrado.");
         }
 
         return usuario;

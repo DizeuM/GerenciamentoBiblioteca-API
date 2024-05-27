@@ -1,7 +1,7 @@
-﻿using BibliotecaAPI.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BibliotecaAPI.Exceptions;
+using BibliotecaAPI.Interfaces;
 
 namespace BibliotecaAPI.Controllers;
 
@@ -58,7 +58,7 @@ public class MultaController : ControllerBase
     {
         try
         {
-            await _multaService.PagarMulta(id);
+            await _multaService.PayMulta(id);
             return Ok();
         }
         catch (NotFoundException ex)

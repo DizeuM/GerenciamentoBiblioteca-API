@@ -5,6 +5,7 @@ using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Enums;
+using BibliotecaAPI.Interfaces;
 
 namespace BibliotecaAPI.Services;
 
@@ -56,8 +57,6 @@ public class RenovacaoService : IRenovacaoService
             throw new BadRequestException("Emprestimo não pode ser renovado.");
         }
 
-        Renovacao novaRenovacao = new Renovacao();
-
         int numRenovacoes = emprestimo.Renovacoes.Count();
 
         if (numRenovacoes >= 3)
@@ -65,36 +64,37 @@ public class RenovacaoService : IRenovacaoService
             throw new BadRequestException("Emprestimo atingiu o limite de renovações.");
         }
 
-        else if (numRenovacoes == 0)
+        Renovacao novaRenovacao;
+
+        if (numRenovacoes == 0)
         {
+            novaRenovacao = new Renovacao
+            {
+                EmprestimoId = emprestimoId,
+                DataRenovacao = DateTime.Now,
+                DataLimiteNova = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59),
+                Status = RenovacaoStatus.Ativo
+            };
+
             emprestimo.Status = EmprestimoStatus.Renovado;
-
-            novaRenovacao.EmprestimoId = emprestimo.Id;
-            novaRenovacao.DataRenovacao = DateTime.Now;
-            novaRenovacao.DataLimiteNova = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59);
-            novaRenovacao.Status = RenovacaoStatus.Ativo;
-
-            await _context.Renovacoes.AddAsync(novaRenovacao);
         }
-
         else
         {
-            var renovacao = emprestimo.Renovacoes.FirstOrDefault(r => r.Status == RenovacaoStatus.Ativo);
+            var renovacaoAtiva = emprestimo.Renovacoes.FirstOrDefault(r => r.Status == RenovacaoStatus.Ativo);
+            renovacaoAtiva.Status = RenovacaoStatus.Expirado;
 
-            renovacao.Status = RenovacaoStatus.Expirado;
-
-            novaRenovacao.EmprestimoId = emprestimo.Id;
-            novaRenovacao.DataRenovacao = DateTime.Now;
-            novaRenovacao.DataLimiteNova = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59);
-            novaRenovacao.Status = RenovacaoStatus.Ativo;
-
-            await _context.Renovacoes.AddAsync(novaRenovacao);
+            novaRenovacao = new Renovacao
+            {
+                EmprestimoId = emprestimoId,
+                DataRenovacao = DateTime.Now,
+                DataLimiteNova = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59),
+                Status = RenovacaoStatus.Ativo
+            };
         }
 
+        await _context.Renovacoes.AddAsync(novaRenovacao);
         await _context.SaveChangesAsync();
 
         return _mapper.Map<ReadRenovacaoDto>(novaRenovacao);
     }
-
-
 }

@@ -5,6 +5,7 @@ using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Enums;
+using BibliotecaAPI.Interfaces;
 
 namespace BibliotecaAPI.Services;
 
@@ -27,7 +28,8 @@ public class MultaService : IMultaService
 
     public async Task<ReadMultaDto> GetMultaById(int id)
     {
-        var multa = await _context.Multas.FirstOrDefaultAsync(e => e.Id == id);
+        var multa = await _context.Multas.FirstOrDefaultAsync(m => m.Id == id);
+
         if (multa == null)
         {
             throw new NotFoundException("Multa não encontrada.");
@@ -38,12 +40,17 @@ public class MultaService : IMultaService
 
     public async Task CreateAndUpdateMultas()
     {
-        var emprestimosAtrasados = await _context.Emprestimos.Include(e => e.Exemplar.Livro).Include(e => e.Renovacoes).Where(e => e.Status == EmprestimoStatus.Atrasado).ToListAsync();
+        var today = DateTime.Now.Date;
+
+        var emprestimosAtrasados = await _context.Emprestimos
+            .Include(e => e.Exemplar.Livro)
+            .Include(e => e.Renovacoes)
+            .Where(e => e.Status == EmprestimoStatus.Atrasado)
+            .ToListAsync();
 
         foreach (var emprestimo in emprestimosAtrasados)
         {
             var dataLimite = emprestimo.DataLimiteInicial;
-
             var renovacao = emprestimo.Renovacoes.LastOrDefault();
 
             if (renovacao != null)
@@ -68,17 +75,18 @@ public class MultaService : IMultaService
                 valorMulta = emprestimo.Exemplar.Livro.Valor * 2;
             }
 
-            var multa = _context.Multas.FirstOrDefault(e => e.EmprestimoId == emprestimo.Id);
+            var multa = await _context.Multas.FirstOrDefaultAsync(m => m.EmprestimoId == emprestimo.Id);
 
             if (multa == null)
             {
-                Multa novaMulta = new Multa();
-
-                novaMulta.EmprestimoId = emprestimo.Id;
-                novaMulta.Valor = valorMulta;
-                novaMulta.InicioMulta = dataLimite.AddSeconds(1);
-                novaMulta.Status = MultaStatus.Pendente;
-                novaMulta.UsuarioId = emprestimo.UsuarioId;
+                var novaMulta = new Multa
+                {
+                    EmprestimoId = emprestimo.Id,
+                    Valor = valorMulta,
+                    InicioMulta = dataLimite.AddSeconds(1),
+                    Status = MultaStatus.Pendente,
+                    UsuarioId = emprestimo.UsuarioId
+                };
 
                 _context.Multas.Add(novaMulta);
             }
@@ -86,15 +94,18 @@ public class MultaService : IMultaService
             {
                 multa.Valor = valorMulta;
             }
-
-            _context.SaveChanges();
         }
+
+        await _context.SaveChangesAsync();
     }
 
-    public async Task PagarMulta(int id)
+    public async Task PayMulta(int id)
     {
-        var multa = await _context.Multas.Include(m => m.Emprestimo.Usuario).FirstOrDefaultAsync(e => e.Id == id);
-        if (multa == null) 
+        var multa = await _context.Multas
+            .Include(m => m.Emprestimo.Usuario)
+            .FirstOrDefaultAsync(e => e.Id == id);
+
+        if (multa == null)
         {
             throw new NotFoundException("Multa não encontrada.");
         }
@@ -105,11 +116,9 @@ public class MultaService : IMultaService
             multa.Status = MultaStatus.Paga;
             await _context.SaveChangesAsync();
         }
-        
         else
         {
             throw new BadRequestException("Emprestimo em aberto.");
         }
     }
-
 }

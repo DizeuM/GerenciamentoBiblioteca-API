@@ -6,6 +6,7 @@ using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Enums;
+using BibliotecaAPI.Interfaces;
 
 namespace BibliotecaAPI.Services;
 
@@ -24,7 +25,7 @@ public class LivroService : ILivroService
         var livro = await _context.Livros.Include(e => e.Exemplares).FirstOrDefaultAsync(livro => livro.Id == id);
         if (livro == null)
         {
-            throw new NotFoundException("Livro não encontrado");
+            throw new NotFoundException("Livro não encontrado.");
         }
 
         return livro;

@@ -2,7 +2,7 @@
 using BibliotecaAPI.Data.Dtos.Response;
 using BibliotecaAPI.Models;
 
-namespace BibliotecaAPI.Services;
+namespace BibliotecaAPI.Interfaces;
 
 public interface ILivroService
 {

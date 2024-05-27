@@ -1,7 +1,7 @@
-﻿using BibliotecaAPI.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BibliotecaAPI.Exceptions;
+using BibliotecaAPI.Interfaces;
 
 namespace BibliotecaAPI.Controllers;
 
@@ -44,8 +44,8 @@ public class RenovacaoController : ControllerBase
     {
         try
         {
-            await _renovacaoService.CreateRenovacao(emprestimoId);
-            return Ok();
+            var renovacaoResponse = await _renovacaoService.CreateRenovacao(emprestimoId);
+            return Ok(renovacaoResponse);
         }
         catch (NotFoundException ex)
         {

@@ -6,6 +6,7 @@ using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Enums;
+using BibliotecaAPI.Interfaces;
 
 namespace BibliotecaAPI.Services;
 
@@ -14,14 +15,12 @@ public class EmprestimoService : IEmprestimoService
     private readonly BibliotecaContext _context;
     private readonly IMapper _mapper;
     private readonly IUsuarioService _usuarioService;
-    private readonly IMultaService _multaService;
 
-    public EmprestimoService(BibliotecaContext context, IMapper mapper, IUsuarioService usuarioService, IMultaService multaService)
+    public EmprestimoService(BibliotecaContext context, IMapper mapper, IUsuarioService usuarioService)
     {
         _context = context;
         _mapper = mapper;
         _usuarioService = usuarioService;
-        _multaService = multaService;
     }
 
     public async Task<Emprestimo> GetEmprestimoByIdOrThrowError(int id)
@@ -58,12 +57,15 @@ public class EmprestimoService : IEmprestimoService
             throw new BadRequestException("Exemplar não disponível para empréstimo.");
         }
 
-        var emprestimo = _mapper.Map<Emprestimo>(emprestimoDto);
-
-        emprestimo.FuncionarioId = funcionarioId;
-        emprestimo.Status = EmprestimoStatus.EmAndamento;
-        emprestimo.DataEmprestimo = DateTime.Now;
-        emprestimo.DataPrevistaInicial = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59);
+        var emprestimo = new Emprestimo
+        {
+            UsuarioId = emprestimoDto.UsuarioId,
+            ExemplarId = emprestimoDto.ExemplarId,
+            FuncionarioId = funcionarioId,
+            DataEmprestimo = DateTime.Now,
+            DataLimiteInicial = DateTime.Now.Date.AddDays(7).AddHours(23).AddMinutes(59).AddSeconds(59),
+            Status = EmprestimoStatus.EmAndamento
+        };
 
         await _context.Emprestimos.AddAsync(emprestimo);
 
@@ -117,37 +119,29 @@ public class EmprestimoService : IEmprestimoService
 
     public async Task UpdateEmprestimosAtrasados()
     {
-        var emprestimos = await _context.Emprestimos.Include(e => e.Renovacoes).ToListAsync();
+        var emprestimos = await _context.Emprestimos
+            .Include(e => e.Renovacoes)
+            .Where(e => e.Status == EmprestimoStatus.EmAndamento || e.Status == EmprestimoStatus.Renovado)
+            .ToListAsync();
 
         foreach (var emprestimo in emprestimos)
         {
             if (emprestimo.Status == EmprestimoStatus.EmAndamento && DateTime.Now > emprestimo.DataLimiteInicial)
             {
                 emprestimo.Status = EmprestimoStatus.Atrasado;
-                await _context.SaveChangesAsync();
                 continue;
             }
 
-            if (emprestimo.Status == EmprestimoStatus.Renovado)
+            var renovacaoAtiva = emprestimo.Renovacoes.FirstOrDefault(r => r.Status == RenovacaoStatus.Ativo);
+
+            if (renovacaoAtiva != null && DateTime.Now > renovacaoAtiva.DataLimiteNova)
             {
-                var renovacao = emprestimo.Renovacoes.FirstOrDefault(r => r.Status == RenovacaoStatus.Ativo);
-
-                if (renovacao == null)
-                {
-                    emprestimo.Status = EmprestimoStatus.Atrasado;
-                }
-
-                if (renovacao.Status == RenovacaoStatus.Ativo && DateTime.Now > renovacao.DataLimiteNova)
-                {
-                    renovacao.Status = RenovacaoStatus.Expirado;
-
-                    emprestimo.Status = EmprestimoStatus.Atrasado;
-                }
-
-                await _context.SaveChangesAsync();
-                continue;
+                renovacaoAtiva.Status = RenovacaoStatus.Expirado;
+                emprestimo.Status = EmprestimoStatus.Atrasado;
             }
         }
+
+        await _context.SaveChangesAsync();
     }
 
 }

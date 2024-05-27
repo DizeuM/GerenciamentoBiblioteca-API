@@ -1,4 +1,6 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
+using BibliotecaAPI.Exceptions;
+using BibliotecaAPI.Interfaces;
 using BibliotecaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,21 +12,26 @@ namespace BibliotecaAPI.Controllers;
 public class AuthController : ControllerBase
 {
 
-    private readonly AuthService _authService;
-    public AuthController(AuthService authService)
+    private readonly IAuthService _authService;
+
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
     }
 
     [HttpPost]
     [AllowAnonymous]
-    public IActionResult Auth([FromBody] AuthDto login)
+    public async Task<IActionResult> Auth([FromBody] AuthDto login)
     {
-        var token = _authService.GenerateToken(login);
-        if (token == null || token == string.Empty)
+        try
         {
-            return BadRequest(new { message = "CPF ou Senha incorretos" });
+            var funcionarioId = await _authService.AuthenticateUser(login);
+            var token = await _authService.GenerateToken(funcionarioId);
+            return Ok(token);
         }
-        return Ok(token);
+        catch (UnauthorizedException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
     }
 }
