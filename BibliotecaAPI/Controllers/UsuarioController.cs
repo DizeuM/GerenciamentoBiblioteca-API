@@ -1,5 +1,8 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
+using BibliotecaAPI.Dtos.Request;
 using BibliotecaAPI.Exceptions;
+using BibliotecaAPI.Interfaces;
+using BibliotecaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +14,14 @@ namespace BibliotecaAPI.Controllers;
 public class UsuarioController : ControllerBase
 {
     private readonly IUsuarioService _usuarioService;
+    private readonly IEmprestimoService _emprestimoService;
+    private readonly IMultaService _multaService;
 
-    public UsuarioController(IUsuarioService usuarioService)
+    public UsuarioController(IUsuarioService usuarioService, IEmprestimoService emprestimoService, IMultaService multaService)
     {
         _usuarioService = usuarioService;
+        _emprestimoService = emprestimoService;
+        _multaService = multaService;
     }
 
     [HttpPost]
@@ -39,9 +46,10 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpGet("Atributos/")]
-    public async Task<IActionResult> ObtemUsuarioPorAtributos()
+    public async Task<IActionResult> ObtemUsuarioPorAtributos([FromQuery] SearchUsuarioDto searchUsuarioDto)
     {
-        return NoContent();
+        var usuariosDtoResponse = await _usuarioService.SearchUsuarioByAttributes(searchUsuarioDto);
+        return Ok(usuariosDtoResponse);
     }
 
     [HttpGet("{id}")]
@@ -61,13 +69,29 @@ public class UsuarioController : ControllerBase
     [HttpGet("{id}/Emprestimos")]
     public async Task<IActionResult> ObtemHistoricoDeEmprestimosDoUsuario(int id)
     {
-        return NoContent();
+        try
+        {
+            var emprestimoResponse = await _emprestimoService.GetEmprestimosUsuario(id);
+            return Ok(emprestimoResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpGet("{id}/Multas")]
     public async Task<IActionResult> ObtemHistoricoDeMultasDoUsuario(int id)
     {
-        return NoContent();
+        try
+        {
+            var multaResponse = await _multaService.GetMultasUsuario(id);
+            return Ok(multaResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]

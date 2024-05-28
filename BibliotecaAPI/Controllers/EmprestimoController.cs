@@ -14,11 +14,13 @@ public class EmprestimoController : ControllerBase
 {
     private readonly IEmprestimoService _emprestimoService;
     private readonly IRenovacaoService _renovacaoService;
+    private readonly IMultaService _multaService;
 
-    public EmprestimoController(IEmprestimoService emprestimoService, IRenovacaoService renovacaoService)
+    public EmprestimoController(IEmprestimoService emprestimoService, IRenovacaoService renovacaoService, IMultaService multaService)
     {
         _emprestimoService = emprestimoService;
         _renovacaoService = renovacaoService;
+        _multaService = multaService;
     }
 
     [HttpPost]
@@ -73,7 +75,19 @@ public class EmprestimoController : ControllerBase
     [HttpGet("{id}/Multas")]
     public async Task<IActionResult> ObtemMultasDoEmprestimo(int id)
     {
-        return NoContent();
+        try
+        {
+            var multaResponse = await _multaService.GetMultaByEmprestimo(id);
+            return Ok(multaResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return Ok(ex.Message);
+        }
     }
 
     [HttpPost("{id}/Devolver")]
@@ -115,7 +129,8 @@ public class EmprestimoController : ControllerBase
     [HttpGet("{id}/Renovacoes")]
     public async Task<IActionResult> ObtemRenovacoesDoEmprestimo(int id)
     {
-        return NoContent();
+        var renovacaoResponse = await _renovacaoService.GetRenovacoesByEmprestimo(id);
+        return Ok(renovacaoResponse);
     }
 
     [HttpPut("AtualizarEmprestimosAtrasados/")]

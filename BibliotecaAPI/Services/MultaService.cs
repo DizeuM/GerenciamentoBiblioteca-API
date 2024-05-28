@@ -13,11 +13,15 @@ public class MultaService : IMultaService
 {
     private readonly BibliotecaContext _context;
     private readonly IMapper _mapper;
+    private readonly IEmprestimoService _emprestimoService;
+    private readonly IUsuarioService _usuarioService;
 
-    public MultaService(BibliotecaContext context, IMapper mapper)
+    public MultaService(BibliotecaContext context, IMapper mapper, IEmprestimoService emprestimoService, IUsuarioService usuarioService)
     {
         _context = context;
         _mapper = mapper;
+        _emprestimoService = emprestimoService;
+        _usuarioService = usuarioService;
     }
 
     public async Task<IEnumerable<ReadMultaDto>> GetMultas()
@@ -36,6 +40,29 @@ public class MultaService : IMultaService
         }
 
         return _mapper.Map<ReadMultaDto>(multa);
+    }
+
+    public async Task<ReadMultaDto> GetMultaByEmprestimo(int emprestimoId)
+    {
+        var emprestimo = await _emprestimoService.GetEmprestimoByIdOrThrowError(emprestimoId);
+
+        var multa = emprestimo.Multa;
+
+        if (multa == null)
+        {
+            throw new Exception("Emprestimo não possui multa.");
+        }
+
+        return _mapper.Map<ReadMultaDto>(multa);
+    }
+
+    public async Task<IEnumerable<ReadMultaDto>> GetMultasUsuario(int usuarioId)
+    {
+        var usuario = await _usuarioService.GetUsuarioByIdOrThrowError(usuarioId);
+
+        var multas = usuario.Multas;
+
+        return _mapper.Map<List<ReadMultaDto>>(multas);
     }
 
     public async Task CreateAndUpdateMultas()

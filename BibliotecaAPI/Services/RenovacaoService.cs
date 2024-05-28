@@ -48,6 +48,15 @@ public class RenovacaoService : IRenovacaoService
         return _mapper.Map<ReadRenovacaoDto>(renovacao);
     }
 
+    public async Task<IEnumerable<ReadRenovacaoDto>> GetRenovacoesByEmprestimo(int emprestimoId)
+    {
+        var emprestimo = await _emprestimoService.GetEmprestimoByIdOrThrowError(emprestimoId);
+
+        var renovacoes = emprestimo.Renovacoes.ToList();
+
+        return _mapper.Map<List<ReadRenovacaoDto>>(renovacoes);
+    }
+
     public async Task<ReadRenovacaoDto> CreateRenovacao(int emprestimoId)
     {
         var emprestimo = await _emprestimoService.GetEmprestimoByIdOrThrowError(emprestimoId);

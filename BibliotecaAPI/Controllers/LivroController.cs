@@ -12,10 +12,12 @@ namespace BibliotecaAPI.Controllers;
 public class LivroController : ControllerBase
 {
     private readonly ILivroService _livroService;
+    private readonly IExemplarService _exemplarService;
 
-    public LivroController(ILivroService livroService)
+    public LivroController(ILivroService livroService, IExemplarService exemplarService)
     {
         _livroService = livroService;
+        _exemplarService = exemplarService;
     }
 
     [HttpPost]
@@ -63,7 +65,15 @@ public class LivroController : ControllerBase
     [HttpGet("{id}/Exemplares")]
     public async Task<IActionResult> ObtemExemplaresDoLivro(int id)
     {
-        return NoContent();
+        try
+        {
+            var exemplarResponse = await _exemplarService.GetLivroExemplares(id);
+            return Ok(exemplarResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPut("{id}")]

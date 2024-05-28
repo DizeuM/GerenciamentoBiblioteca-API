@@ -25,7 +25,7 @@ public class EmprestimoService : IEmprestimoService
 
     public async Task<Emprestimo> GetEmprestimoByIdOrThrowError(int id)
     {
-        var emprestimo = await _context.Emprestimos.Include(e => e.Renovacoes).FirstOrDefaultAsync(e => e.Id == id);
+        var emprestimo = await _context.Emprestimos.Include(e => e.Renovacoes).Include(e => e.Multa).FirstOrDefaultAsync(e => e.Id == id);
 
         if (emprestimo == null)
         {
@@ -33,6 +33,15 @@ public class EmprestimoService : IEmprestimoService
         }
 
         return emprestimo;
+    }
+
+    public async Task<IEnumerable<ReadEmprestimoDto>> GetEmprestimosUsuario(int usuarioId)
+    {
+        var usuario = await _usuarioService.GetUsuarioByIdOrThrowError(usuarioId);
+
+        var emprestimos = usuario.Emprestimos;
+
+        return _mapper.Map<List<ReadEmprestimoDto>>(emprestimos);
     }
 
     public async Task<ReadEmprestimoDto> CreateEmprestimo(CreateEmprestimoDto emprestimoDto, int funcionarioId)

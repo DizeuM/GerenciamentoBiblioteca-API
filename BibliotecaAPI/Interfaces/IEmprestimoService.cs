@@ -7,6 +7,7 @@ namespace BibliotecaAPI.Interfaces;
 public interface IEmprestimoService
 {
     Task<Emprestimo> GetEmprestimoByIdOrThrowError(int id);
+    Task<IEnumerable<ReadEmprestimoDto>> GetEmprestimosUsuario(int usuarioId);
     Task<ReadEmprestimoDto> CreateEmprestimo(CreateEmprestimoDto emprestimoDto, int funcionarioId);
     Task<IEnumerable<ReadEmprestimoDto>> GetEmprestimos();
     Task<ReadEmprestimoDto> GetEmprestimoById(int id);

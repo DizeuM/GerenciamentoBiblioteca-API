@@ -3,6 +3,8 @@ using BibliotecaAPI.Data;
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
 using BibliotecaAPI.Data.Models;
+using BibliotecaAPI.Dtos.Request;
+using BibliotecaAPI.Enums;
 using BibliotecaAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +42,30 @@ public class UsuarioService : IUsuarioService
         await _context.SaveChangesAsync();
 
         return _mapper.Map<ReadUsuarioDto>(usuario);
+    }
+
+    public async Task<IEnumerable<ReadUsuarioDto>> SearchUsuarioByAttributes(SearchUsuarioDto searchUsuarioDto)
+    {
+        var query = _context.Usuarios.Include(u => u.Emprestimos).Include(u => u.Multas).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchUsuarioDto.Nome))
+        {
+            query = query.Where(f => f.Nome.ToLower().Contains(searchUsuarioDto.Nome.ToLower().Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchUsuarioDto.Cpf))
+        {
+            query = query.Where(f => f.Cpf == searchUsuarioDto.Cpf);
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchUsuarioDto.Email))
+        {
+            query = query.Where(f => f.Email.ToLower().Contains(searchUsuarioDto.Email.ToLower().Trim()));
+        }
+
+        var usuarios = await query.ToListAsync();
+
+        return _mapper.Map<List<ReadUsuarioDto>>(usuarios);
     }
 
     public async Task<IEnumerable<ReadUsuarioDto>> GetAllUsuarios()

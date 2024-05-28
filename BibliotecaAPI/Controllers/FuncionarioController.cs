@@ -1,4 +1,5 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
+using BibliotecaAPI.Dtos.Request;
 using BibliotecaAPI.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,9 +40,10 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpGet("Atributos/")]
-    public async Task<IActionResult> ObtemFuncionarioPorAtributos()
+    public async Task<IActionResult> ObtemFuncionarioPorAtributos([FromQuery] SearchFuncionarioDto searchFuncionarioDto)
     {
-        return NoContent();
+        var funcionariosDtoResponse = await _funcionarioService.SearchFuncionarioByAttributes(searchFuncionarioDto);
+        return Ok(funcionariosDtoResponse);
     }
 
     [HttpGet("{id}")]

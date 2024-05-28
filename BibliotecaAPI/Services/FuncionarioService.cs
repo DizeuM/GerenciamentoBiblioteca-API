@@ -4,6 +4,7 @@ using BibliotecaAPI.Data;
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
 using BibliotecaAPI.Data.Models;
+using BibliotecaAPI.Dtos.Request;
 using BibliotecaAPI.Enums;
 using BibliotecaAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,35 @@ public class FuncionarioService : IFuncionarioService
         await _context.SaveChangesAsync();
 
         return _mapper.Map<ReadFuncionarioDto>(funcionario);
+    }
+
+    public async Task<IEnumerable<ReadFuncionarioDto>> SearchFuncionarioByAttributes(SearchFuncionarioDto searchFuncionarioDto)
+    {
+        var query = _context.Funcionarios.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchFuncionarioDto.Nome))
+        {
+            query = query.Where(f => f.Nome.ToLower().Contains(searchFuncionarioDto.Nome.ToLower().Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchFuncionarioDto.Cpf))
+        {
+            query = query.Where(f => f.Cpf == searchFuncionarioDto.Cpf);
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchFuncionarioDto.Email))
+        {
+            query = query.Where(f => f.Email.ToLower().Contains(searchFuncionarioDto.Email.ToLower().Trim()));
+        }
+
+        if (searchFuncionarioDto.Status != null)
+        {
+            query = query.Where(f => f.Status == searchFuncionarioDto.Status);
+        }
+
+        var funcionarios = await query.ToListAsync();
+
+        return _mapper.Map<List<ReadFuncionarioDto>>(funcionarios);
     }
 
     public async Task<IEnumerable<ReadFuncionarioDto>> GetAllFuncionarios()
