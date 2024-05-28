@@ -2,8 +2,8 @@
 using BibliotecaAPI.Data;
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
+using BibliotecaAPI.Data.Models;
 using BibliotecaAPI.Exceptions;
-using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class UsuarioService : IUsuarioService

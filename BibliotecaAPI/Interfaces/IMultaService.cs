@@ -1,6 +1,4 @@
-﻿using BibliotecaAPI.Data.Dtos.Request;
-using BibliotecaAPI.Data.Dtos.Response;
-using Microsoft.AspNetCore.Mvc;
+﻿using BibliotecaAPI.Data.Dtos.Response;
 
 namespace BibliotecaAPI.Interfaces;
 

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
+using BibliotecaAPI.Data.Models;
 using BibliotecaAPI.Enums;
-using BibliotecaAPI.Models;
 
 namespace BibliotecaAPI.Profiles;
 

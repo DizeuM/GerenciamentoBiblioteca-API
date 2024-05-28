@@ -1,9 +1,6 @@
-﻿using BibliotecaAPI.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿namespace BibliotecaAPI.Data.Dtos.Request;
 
-namespace BibliotecaAPI.Data.Dtos.Request;
-
-public class UpdateLivroDto
+public class CreateLivroDto
 {
     public string Nome { get; set; }
     public string Autor { get; set; }
@@ -12,5 +9,4 @@ public class UpdateLivroDto
     public string Genero { get; set; }
     public int QntPaginas { get; set; }
     public float Valor { get; set; }
-    public LivroStatus Status { get; set; }
 }

@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace BibliotecaAPI.Models;
+namespace BibliotecaAPI.Data.Models;
 
 public class Exemplar
 {
@@ -16,8 +16,6 @@ public class Exemplar
     [Required]
     public ExemplarStatus Status { get; set; }
 
-    [JsonIgnore]
     public Livro Livro { get; set; }
-
     public virtual ICollection<Emprestimo> Emprestimos { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿using BibliotecaAPI.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace BibliotecaAPI.Models;
+namespace BibliotecaAPI.Data.Models;
 
 public class Renovacao
 {

@@ -2,7 +2,6 @@
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Interfaces;
-using BibliotecaAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

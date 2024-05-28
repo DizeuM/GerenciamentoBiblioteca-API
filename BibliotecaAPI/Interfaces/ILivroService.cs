@@ -1,6 +1,6 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
-using BibliotecaAPI.Models;
+using BibliotecaAPI.Data.Models;
 
 namespace BibliotecaAPI.Interfaces;
 

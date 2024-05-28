@@ -1,5 +1,4 @@
 ﻿using BibliotecaAPI.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Data.Dtos.Request;
 

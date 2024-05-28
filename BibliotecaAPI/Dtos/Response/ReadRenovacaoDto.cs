@@ -1,6 +1,4 @@
 ﻿using BibliotecaAPI.Enums;
-using BibliotecaAPI.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace BibliotecaAPI.Data.Dtos.Response;
 

@@ -1,5 +1,4 @@
 ﻿using BibliotecaAPI.Data.Dtos.Request;
-using BibliotecaAPI.Models;
 
 namespace BibliotecaAPI.Interfaces;
 

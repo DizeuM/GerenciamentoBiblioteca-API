@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace BibliotecaAPI.Models;
+namespace BibliotecaAPI.Data.Models;
 
 public class Livro
 {
@@ -12,22 +12,27 @@ public class Livro
     public int Id { get; set; }
 
     [Required]
-    public string Nome { get; set; } 
+    [MaxLength(100)]
+    public string Nome { get; set; }
 
     [Required]
+    [MaxLength(100)]
     public string Autor { get; set; }
 
     [Required]
+    [MaxLength(100)]
     public string Editora { get; set; }
 
     [Required]
+    [MaxLength(50)]
     public string Edicao { get; set; }
 
-    [Required] 
+    [Required]
+    [MaxLength(50)]
     public string Genero { get; set; }
 
     [Required]
-    public int QntPaginas { get; set; } 
+    public int QntPaginas { get; set; }
 
     [Required]
     public float Valor { get; set; }
@@ -35,6 +40,5 @@ public class Livro
     [Required]
     public LivroStatus Status { get; set; }
 
-    [JsonIgnore]
     public virtual ICollection<Exemplar> Exemplares { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using BibliotecaAPI.Models;
+﻿using BibliotecaAPI.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BibliotecaAPI.Data;

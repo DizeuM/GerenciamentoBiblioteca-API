@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BibliotecaAPI.Data.Dtos.Request;
+﻿namespace BibliotecaAPI.Data.Dtos.Request;
 
 public class UpdateUsuarioDto
 {

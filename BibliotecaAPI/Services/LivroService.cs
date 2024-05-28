@@ -2,11 +2,11 @@
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
 using BibliotecaAPI.Data;
-using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Enums;
 using BibliotecaAPI.Interfaces;
+using BibliotecaAPI.Data.Models;
 
 namespace BibliotecaAPI.Services;
 

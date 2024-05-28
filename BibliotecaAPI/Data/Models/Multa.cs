@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace BibliotecaAPI.Models;
+namespace BibliotecaAPI.Data.Models;
 
 public class Multa
 {
@@ -27,9 +27,6 @@ public class Multa
     [Required]
     public MultaStatus Status { get; set; }
 
-    [JsonIgnore]
     public Emprestimo Emprestimo { get; set; }
-
-    [JsonIgnore]
     public Usuario Usuario { get; set; }
 }
