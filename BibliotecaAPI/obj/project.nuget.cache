@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "tMhEyMWMC0NQn/sSBK7XOcVzSreHNYaRtbGXBR+xPDuglHuvqVmlDtNHgEPM/hnL+4jFAhAIpNQJZ7jmETDijQ==",
+  "dgSpecHash": "phYGdFS0JyYBNvA+NC6ywc6JuJe1qo/ajDbDIClrO7Y/7oxpp5JnKBJMi/cz+tejQi044AWzhZL2XW4udlN/Ng==",
   "success": true,
   "projectFilePath": "C:\\Users\\mateusDizeu\\source\\repos\\GerenciamentoBiblioteca-API\\BibliotecaAPI\\BibliotecaAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\mateusDizeu\\.nuget\\packages\\fluentvalidation\\11.9.1\\fluentvalidation.11.9.1.nupkg.sha512",
+    "C:\\Users\\mateusDizeu\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.0\\fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "C:\\Users\\mateusDizeu\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.5.1\\fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.4\\microsoft.aspnetcore.authentication.jwtbearer.8.0.4.nupkg.sha512",
     "C:\\Users\\mateusDizeu\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\8.0.4\\microsoft.aspnetcore.jsonpatch.8.0.4.nupkg.sha512",

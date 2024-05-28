@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using BibliotecaAPI;
 using BibliotecaAPI.Data;
 using BibliotecaAPI.Data.Dtos.Request;
 using BibliotecaAPI.Data.Dtos.Response;
-using BibliotecaAPI.Enums;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +29,11 @@ public class UsuarioService : IUsuarioService
 
     public async Task<ReadUsuarioDto> CreateUsuario(CreateUsuarioDto usuarioDto)
     {
+        if (await _context.Usuarios.AnyAsync(u => u.Cpf == usuarioDto.Cpf))
+        {
+            throw new BadRequestException("Já existe um usuário cadastrado com esse CPF.");
+        }
+
         var usuario = _mapper.Map<Usuario>(usuarioDto);
 
         await _context.Usuarios.AddAsync(usuario);
