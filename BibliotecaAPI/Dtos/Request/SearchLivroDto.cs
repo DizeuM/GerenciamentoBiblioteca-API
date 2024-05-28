@@ -1,6 +1,6 @@
 ﻿using BibliotecaAPI.Enums;
 
-namespace BibliotecaAPI.Data.Dtos.Request;
+namespace BibliotecaAPI.Dtos.Request;
 
 public class SearchLivroDto
 {

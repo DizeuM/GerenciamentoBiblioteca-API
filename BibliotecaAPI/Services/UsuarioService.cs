@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using BibliotecaAPI.Data;
-using BibliotecaAPI.Data.Dtos.Request;
-using BibliotecaAPI.Data.Dtos.Response;
-using BibliotecaAPI.Data.Models;
 using BibliotecaAPI.Dtos.Request;
-using BibliotecaAPI.Enums;
+using BibliotecaAPI.Dtos.Response;
+using BibliotecaAPI.Data.Models;
 using BibliotecaAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
 

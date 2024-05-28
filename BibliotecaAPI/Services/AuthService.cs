@@ -1,5 +1,5 @@
 ﻿using BibliotecaAPI.Data;
-using BibliotecaAPI.Data.Dtos.Request;
+using BibliotecaAPI.Dtos.Request;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Interfaces;
 using Microsoft.IdentityModel.Tokens;

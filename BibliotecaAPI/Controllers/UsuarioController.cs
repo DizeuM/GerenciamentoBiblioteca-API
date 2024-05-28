@@ -1,8 +1,6 @@
-﻿using BibliotecaAPI.Data.Dtos.Request;
-using BibliotecaAPI.Dtos.Request;
+﻿using BibliotecaAPI.Dtos.Request;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Interfaces;
-using BibliotecaAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

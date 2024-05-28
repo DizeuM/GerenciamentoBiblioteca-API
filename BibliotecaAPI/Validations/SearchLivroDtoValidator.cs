@@ -1,5 +1,4 @@
-﻿using BibliotecaAPI.Data.Dtos.Request;
-using FluentValidation.AspNetCore;
+﻿using BibliotecaAPI.Dtos.Request;
 using FluentValidation;
 
 namespace BibliotecaAPI.Data.Validation;

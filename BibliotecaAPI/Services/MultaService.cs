@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BibliotecaAPI.Data.Dtos.Response;
+using BibliotecaAPI.Dtos.Response;
 using BibliotecaAPI.Data;
 using BibliotecaAPI.Data.Models;
 using Microsoft.EntityFrameworkCore;

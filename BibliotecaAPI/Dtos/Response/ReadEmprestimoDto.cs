@@ -1,6 +1,6 @@
 ﻿using BibliotecaAPI.Enums;
 
-namespace BibliotecaAPI.Data.Dtos.Response;
+namespace BibliotecaAPI.Dtos.Response;
 
 public class ReadEmprestimoDto
 {

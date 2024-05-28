@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BibliotecaAPI.Data.Dtos.Request;
-using BibliotecaAPI.Data.Dtos.Response;
+using BibliotecaAPI.Dtos.Request;
+using BibliotecaAPI.Dtos.Response;
 using BibliotecaAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using BibliotecaAPI.Exceptions;

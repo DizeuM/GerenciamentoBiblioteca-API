@@ -1,4 +1,4 @@
-﻿using BibliotecaAPI.Data.Dtos.Response;
+﻿using BibliotecaAPI.Dtos.Response;
 using BibliotecaAPI.Data.Models;
 
 namespace BibliotecaAPI.Interfaces;
