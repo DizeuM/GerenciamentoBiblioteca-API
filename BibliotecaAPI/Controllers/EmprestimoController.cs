@@ -13,14 +13,16 @@ namespace BibliotecaAPI.Controllers;
 public class EmprestimoController : ControllerBase
 {
     private readonly IEmprestimoService _emprestimoService;
+    private readonly IRenovacaoService _renovacaoService;
 
-    public EmprestimoController(IEmprestimoService emprestimoService)
+    public EmprestimoController(IEmprestimoService emprestimoService, IRenovacaoService renovacaoService)
     {
         _emprestimoService = emprestimoService;
+        _renovacaoService = renovacaoService;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateEmprestimoDto emprestimoDto)
+    public async Task<IActionResult> CriaEmprestimo([FromBody] CreateEmprestimoDto emprestimoDto)
     {
         try
         {
@@ -41,14 +43,21 @@ public class EmprestimoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> ObtemEmprestimos()
     {
         var emprestimosDtoResponse = await _emprestimoService.GetEmprestimos();
         return Ok(emprestimosDtoResponse);
     }
 
+    [HttpGet("Renovacoes/")]
+    public async Task<IActionResult> ObtemRenovacoesDosEmprestimos()
+    {
+        var renovacaoResponse = await _renovacaoService.GetRenovacoes();
+        return Ok(renovacaoResponse);
+    }
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> ObtemEmprestimo(int id)
     {
         try
         {
@@ -61,8 +70,14 @@ public class EmprestimoController : ControllerBase
         }
     }
 
-    [HttpPost("Devolver/{id}")]   
-    public async Task<IActionResult> Post(int id)
+    [HttpGet("{id}/Multas")]
+    public async Task<IActionResult> ObtemMultasDoEmprestimo(int id)
+    {
+        return NoContent();
+    }
+
+    [HttpPost("{id}/Devolver")]
+    public async Task<IActionResult> DevolveEmprestimo(int id)
     {
         try
         {
@@ -79,11 +94,34 @@ public class EmprestimoController : ControllerBase
         }
     }
 
-    [HttpPut("AtualizarStatus/")]
-    public async Task<IActionResult> Put()
+    [HttpPost("{id}/Renovar")]
+    public async Task<IActionResult> RenovaEmprestimo(int id)
+    {
+        try
+        {
+            var renovacaoResponse = await _renovacaoService.CreateRenovacao(id);
+            return Ok(renovacaoResponse);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (BadRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{id}/Renovacoes")]
+    public async Task<IActionResult> ObtemRenovacoesDoEmprestimo(int id)
+    {
+        return NoContent();
+    }
+
+    [HttpPut("AtualizarEmprestimosAtrasados/")]
+    public async Task<IActionResult> AtualizaEmprestimosAtrasados()
     {
         await _emprestimoService.UpdateEmprestimosAtrasados();
         return NoContent();
     }
-
 }

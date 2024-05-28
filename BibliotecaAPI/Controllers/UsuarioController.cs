@@ -18,8 +18,8 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateUsuarioDto usuarioDto)
-    { 
+    public async Task<IActionResult> CriaUsuario([FromBody] CreateUsuarioDto usuarioDto)
+    {
         try
         {
             var usuarioDtoResponse = await _usuarioService.CreateUsuario(usuarioDto);
@@ -29,18 +29,23 @@ public class UsuarioController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> ObtemUsuarios()
     {
         var usuariosDtoResponse = await _usuarioService.GetAllUsuarios();
         return Ok(usuariosDtoResponse);
     }
 
+    [HttpGet("Atributos/")]
+    public async Task<IActionResult> ObtemUsuarioPorAtributos()
+    {
+        return NoContent();
+    }
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> ObtemUsuario(int id)
     {
         try
         {
@@ -53,8 +58,20 @@ public class UsuarioController : ControllerBase
         }
     }
 
+    [HttpGet("{id}/Emprestimos")]
+    public async Task<IActionResult> ObtemHistoricoDeEmprestimosDoUsuario(int id)
+    {
+        return NoContent();
+    }
+
+    [HttpGet("{id}/Multas")]
+    public async Task<IActionResult> ObtemHistoricoDeMultasDoUsuario(int id)
+    {
+        return NoContent();
+    }
+
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] UpdateUsuarioDto usuarioDto)
+    public async Task<IActionResult> AtualizaUsuario(int id, [FromBody] UpdateUsuarioDto usuarioDto)
     {
         try
         {
@@ -68,7 +85,7 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> ExcluiUsuario(int id)
     {
         try
         {

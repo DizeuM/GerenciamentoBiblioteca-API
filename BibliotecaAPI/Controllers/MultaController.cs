@@ -18,7 +18,7 @@ public class MultaController : ControllerBase
     }
 
     [HttpPost("CalcularMultas/")]
-    public async Task<IActionResult> CalculaMulta()
+    public async Task<IActionResult> CriaEAtualizaMultas()
     {
         try
         {
@@ -32,14 +32,14 @@ public class MultaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> ObtemMultas()
     {
         var multaResponse = await _multaService.GetMultas();
         return Ok(multaResponse);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> ObtemMulta(int id)
     {
         try
         {
@@ -52,9 +52,8 @@ public class MultaController : ControllerBase
         }
     }
 
-
-    [HttpPost("Pagar/{id}")]
-    public async Task<IActionResult> Post(int id)
+    [HttpPost("{id}/Pagar")]
+    public async Task<IActionResult> a(int id)
     {
         try
         {

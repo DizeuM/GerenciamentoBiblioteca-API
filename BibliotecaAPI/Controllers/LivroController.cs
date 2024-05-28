@@ -19,7 +19,7 @@ public class LivroController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateLivroDto livroDto)
+    public async Task<IActionResult> CriaLivro([FromBody] CreateLivroDto livroDto)
     {
         try
         {
@@ -32,22 +32,22 @@ public class LivroController : ControllerBase
         }
     }
 
-    [HttpGet("Atributos/")]
-    public async Task<IActionResult> GetByAttributes([FromQuery] SearchLivroDto livroDto)
-    {
-        var livrosDtoResponse = await _livroService.SearchLivroByAttributes(livroDto);
-        return Ok(livrosDtoResponse);
-    }
-
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> ObtemLivros()
     {
         var livrosDtoResponse = await _livroService.GetLivros();
         return Ok(livrosDtoResponse);
     }
 
+    [HttpGet("Atributos/")]
+    public async Task<IActionResult> ObtemLivrosPorAtributos([FromQuery] SearchLivroDto livroDto)
+    {
+        var livrosDtoResponse = await _livroService.SearchLivroByAttributes(livroDto);
+        return Ok(livrosDtoResponse);
+    }
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> ObtemLivro(int id)
     {
         try
         {
@@ -60,8 +60,14 @@ public class LivroController : ControllerBase
         }
     }
 
+    [HttpGet("{id}/Exemplares")]
+    public async Task<IActionResult> ObtemExemplaresDoLivro(int id)
+    {
+        return NoContent();
+    }
+
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] UpdateLivroDto livroDto)
+    public async Task<IActionResult> AtualizaLivro(int id, [FromBody] UpdateLivroDto livroDto)
     {
         try
         {
@@ -75,7 +81,7 @@ public class LivroController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> ExcluiLivro(int id)
     {
         try
         {

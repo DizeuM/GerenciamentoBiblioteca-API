@@ -18,7 +18,7 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateFuncionarioDto funcionarioDto)
+    public async Task<IActionResult> CriaFuncionario([FromBody] CreateFuncionarioDto funcionarioDto)
     {
         try
         {
@@ -32,14 +32,20 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> ObtemFuncionarios()
     {
         var funcionariosDtoResponse = await _funcionarioService.GetAllFuncionarios();
         return Ok(funcionariosDtoResponse);
     }
 
+    [HttpGet("Atributos/")]
+    public async Task<IActionResult> ObtemFuncionarioPorAtributos()
+    {
+        return NoContent();
+    }
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> ObtemFuncionario(int id)
     {
         try
         {
@@ -53,7 +59,7 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] UpdateFuncionarioDto funcionarioDto)
+    public async Task<IActionResult> AtualizaFuncionario(int id, [FromBody] UpdateFuncionarioDto funcionarioDto)
     {
         try
         {
