@@ -18,8 +18,19 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    /// <summary>
+    /// Autentica um usuário e gera um token JWT.
+    /// </summary>
+    /// <param name="login">Dados de login do usuário.</param>
+    /// <returns>Retorna o token JWT se a autenticação for bem-sucedida.</returns>
+    /// <response code="200">Autenticação bem-sucedida.</response>
+    /// <response code="400">Requisição inválida.</response>
+    /// <response code="401">CPF ou Senha incorretos.</response>
     [HttpPost]
     [AllowAnonymous]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 401)]
     public async Task<IActionResult> Auth([FromBody] AuthDto login)
     {
         try

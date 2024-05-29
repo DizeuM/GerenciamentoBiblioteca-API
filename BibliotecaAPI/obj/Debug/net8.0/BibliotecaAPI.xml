@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BibliotecaAPI</name>
+    </assembly>
+    <members>
+        <member name="M:BibliotecaAPI.Controllers.AuthController.Auth(BibliotecaAPI.Dtos.Request.AuthDto)">
+            <summary>
+            Autentica um usuário e gera um token JWT.
+            </summary>
+            <param name="login">Dados de login do usuário.</param>
+            <returns>Retorna o token JWT se a autenticação for bem-sucedida.</returns>
+            <response code="200">Autenticação bem-sucedida.</response>
+            <response code="400">Requisição inválida.</response>
+            <response code="401">CPF ou Senha incorretos.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.CriaEmprestimo(BibliotecaAPI.Dtos.Request.CreateEmprestimoDto)">
+            <summary>
+            Cria um novo empréstimo.
+            </summary>
+            <param name="emprestimoDto">Os dados do empréstimo a ser criado.</param>
+            <returns>Retorna o empréstimo criado.</returns>
+            <response code="201">Empréstimo criado com sucesso.</response>
+            <response code="400">Requisição inválida ou usuário com multas pendentes ou limite de empréstimos atingido.</response>
+            <response code="404">Usuário ou exemplar não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.ObtemEmprestimos">
+            <summary>
+            Obtém todos os empréstimos.
+            </summary>
+            <returns>Lista de empréstimos.</returns>
+            <response code="200">Retorna a lista de empréstimos.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.ObtemRenovacoesDosEmprestimos">
+            <summary>
+            Obtém todas as renovações dos empréstimos.
+            </summary>
+            <returns>Lista de renovações.</returns>
+            <response code="200">Retorna a lista de renovações.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.ObtemEmprestimo(System.Int32)">
+            <summary>
+            Obtém um empréstimo pelo ID.
+            </summary>
+            <param name="id">ID do empréstimo.</param>
+            <returns>O empréstimo solicitado.</returns>
+            <response code="200">Retorna o empréstimo solicitado.</response>
+            <response code="404">Empréstimo não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.ObtemMultasDoEmprestimo(System.Int32)">
+            <summary>
+            Obtém a multa de um empréstimo pelo ID.
+            </summary>
+            <param name="id">ID do empréstimo.</param>
+            <returns>Multa do empréstimo.</returns>
+            <response code="200">Retorna multa.</response>
+            <response code="404">Empréstimo não encontrado ou emprestimo não possui multa.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.DevolveEmprestimo(System.Int32)">
+            <summary>
+            Devolve um empréstimo.
+            </summary>
+            <param name="id">ID do empréstimo.</param>
+            <response code="204">Empréstimo devolvido com sucesso.</response>
+            <response code="200">Empréstimo devolvido com sucesso mas tem multa pendente</response>
+            <response code="404">Empréstimo não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.RenovaEmprestimo(System.Int32)">
+            <summary>
+            Renova um empréstimo.
+            </summary>
+            <param name="id">ID do empréstimo.</param>
+            <returns>Retorna a renovação criada.</returns>
+            <response code="200">Renovação criada com sucesso.</response>
+            <response code="400">Requisição inválida ou emprestimo atingiu o limite de renovações.</response>
+            <response code="404">Empréstimo não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.ObtemRenovacoesDoEmprestimo(System.Int32)">
+            <summary>
+            Obtém as renovações de um empréstimo pelo ID.
+            </summary>
+            <param name="id">ID do empréstimo.</param>
+            <returns>Lista de renovações do empréstimo.</returns>
+            <response code="200">Retorna a lista de renovações.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.EmprestimoController.AtualizaEmprestimosAtrasados">
+            <summary>
+            Atualiza os status de empréstimos atrasados.
+            </summary>
+            <response code="204">Status de empréstimos atrasados atualizados com sucesso.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.ExemplarController.CriaExemplar(BibliotecaAPI.Dtos.Request.CreateExemplarDto)">
+            <summary>
+            Cria um novo exemplar.
+            </summary>
+            <param name="exemplarDto">Os dados do exemplar a ser criado.</param>
+            <returns>Retorna o exemplar criado.</returns>
+            <response code="201">Exemplar criado com sucesso.</response>
+            <response code="400">Requisição inválida.</response>
+            <response code="404">Livro não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.ExemplarController.ObtemExemplares">
+            <summary>
+            Obtém todos os exemplares.
+            </summary>
+            <returns>Retorna uma lista de exemplares.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.ExemplarController.ObtemExemplar(System.Int32)">
+            <summary>
+            Obtém um exemplar pelo ID.
+            </summary>
+            <param name="id">ID do exemplar.</param>
+            <returns>Retorna o exemplar com o ID especificado.</returns>
+            <response code="200">Exemplar encontrado.</response>
+            <response code="404">Exemplar não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.ExemplarController.AtualizaStatusExemplar(System.Int32)">
+            <summary>
+            Atualiza o status de um exemplar.
+            </summary>
+            <param name="id">ID do exemplar a ser atualizado.</param>
+            <returns>Retorna NoContent se o status do exemplar foi atualizado com sucesso.</returns>
+            <response code="204">Status do exemplar atualizado com sucesso.</response>
+            <response code="404">Exemplar não encontrado.</response>
+            <response code="400">Exemplar está em uso.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.FuncionarioController.CriaFuncionario(BibliotecaAPI.Dtos.Request.CreateFuncionarioDto)">
+            <summary>
+            Cria um novo funcionário.
+            </summary>
+            <param name="funcionarioDto">Os dados do funcionário a ser criado.</param>
+            <returns>Retorna o funcionário criado.</returns>
+            <response code="201">Funcionário criado com sucesso.</response>
+            <response code="400">Requisição inválida.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.FuncionarioController.ObtemFuncionarios">
+            <summary>
+            Obtém todos os funcionários.
+            </summary>
+            <returns>Retorna uma lista de funcionários.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.FuncionarioController.ObtemFuncionarioPorAtributos(BibliotecaAPI.Dtos.Request.SearchFuncionarioDto)">
+            <summary>
+            Obtém funcionários por atributos.
+            </summary>
+            <param name="searchFuncionarioDto">Os atributos para filtrar os funcionários.</param>
+            <returns>Retorna uma lista de funcionários que correspondem aos atributos fornecidos.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.FuncionarioController.ObtemFuncionario(System.Int32)">
+            <summary>
+            Obtém um funcionário pelo ID.
+            </summary>
+            <param name="id">ID do funcionário.</param>
+            <returns>Retorna o funcionário com o ID especificado.</returns>
+            <response code="200">Funcionário encontrado.</response>
+            <response code="404">Funcionário não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.FuncionarioController.AtualizaFuncionario(System.Int32,BibliotecaAPI.Dtos.Request.UpdateFuncionarioDto)">
+            <summary>
+            Atualiza um funcionário.
+            </summary>
+            <param name="id">ID do funcionário a ser atualizado.</param>
+            <param name="funcionarioDto">Os dados do funcionário a serem atualizados.</param>
+            <returns>Retorna NoContent se o funcionário foi atualizado com sucesso.</returns>
+            <response code="204">Funcionário atualizado com sucesso.</response>
+            <response code="400">Requisição inválida.</response>
+            <response code="404">Funcionário não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.LivroController.CriaLivro(BibliotecaAPI.Dtos.Request.CreateLivroDto)">
+            <summary>
+            Cria um novo livro.
+            </summary>
+            <param name="livroDto">Os dados do livro a ser criado.</param>
+            <returns>Retorna o livro criado.</returns>
+            <response code="201">Livro criado com sucesso.</response>
+            <response code="400">Requisição inválida.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.LivroController.ObtemLivros">
+            <summary>
+            Obtém todos os livros.
+            </summary>
+            <returns>Retorna uma lista de livros.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.LivroController.ObtemLivrosPorAtributos(BibliotecaAPI.Dtos.Request.SearchLivroDto)">
+            <summary>
+            Obtém livros por atributos.
+            </summary>
+            <param name="livroDto">Os atributos para filtrar os livros.</param>
+            <returns>Retorna uma lista de livros que correspondem aos atributos fornecidos.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.LivroController.ObtemLivro(System.Int32)">
+            <summary>
+            Obtém um livro pelo ID.
+            </summary>
+            <param name="id">ID do livro.</param>
+            <returns>Retorna o livro com o ID especificado.</returns>
+            <response code="200">Livro encontrado.</response>
+            <response code="404">Livro não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.LivroController.ObtemExemplaresDoLivro(System.Int32)">
+            <summary>
+            Obtém os exemplares pelo ID do livro.
+            </summary>
+            <param name="id">ID do livro.</param>
+            <returns>Retorna uma lista de exemplares do livro especificado.</returns>
+            <response code="200">Exemplares encontrados.</response>
+            <response code="404">Livro não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.LivroController.AtualizaLivro(System.Int32,BibliotecaAPI.Dtos.Request.UpdateLivroDto)">
+            <summary>
+            Atualiza um livro.
+            </summary>
+            <param name="id">ID do livro a ser atualizado.</param>
+            <param name="livroDto">Os dados do livro a serem atualizados.</param>
+            <returns>Retorna NoContent se o livro foi atualizado com sucesso.</returns>
+            <response code="204">Livro atualizado com sucesso.</response>
+            <response code="404">Livro não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.LivroController.ExcluiLivro(System.Int32)">
+            <summary>
+            Exclui um livro.
+            </summary>
+            <param name="id">ID do livro a ser excluído.</param>
+            <returns>Retorna NoContent se o livro foi excluído com sucesso.</returns>
+            <response code="204">Livro excluído com sucesso.</response>
+            <response code="400">Requisição inválida.</response>
+            <response code="404">Livro não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.MultaController.CriaEAtualizaMultas">
+            <summary>
+            Cria e atualiza multas de empréstimos atrasados.
+            </summary>
+            <returns>Retorna NoContent se a operação foi bem-sucedida.</returns>
+            <response code="204">Multas criadas e atualizadas com sucesso.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.MultaController.ObtemMultas">
+            <summary>
+            Obtém todas as multas.
+            </summary>
+            <returns>Retorna uma lista de multas.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.MultaController.ObtemMulta(System.Int32)">
+            <summary>
+            Obtém uma multa pelo ID.
+            </summary>
+            <param name="id">ID da multa.</param>
+            <returns>Retorna a multa com o ID especificado.</returns>
+            <response code="200">Multa encontrada.</response>
+            <response code="404">Multa não encontrada.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.MultaController.a(System.Int32)">
+            <summary>
+            Paga uma multa pelo ID.
+            </summary>
+            <param name="id">ID da multa a ser paga.</param>
+            <returns>Retorna Ok se a operação foi bem-sucedida.</returns>
+            <response code="200">Multa paga com sucesso.</response>
+            <response code="404">Multa não encontrada.</response>
+            <response code="400">Empréstimo em aberto.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.CriaUsuario(BibliotecaAPI.Dtos.Request.CreateUsuarioDto)">
+            <summary>
+            Cria um novo usuário.
+            </summary>
+            <param name="usuarioDto">Os dados do usuário a ser criado.</param>
+            <returns>Retorna o usuário criado.</returns>
+            <response code="201">Usuário criado com sucesso.</response>
+            <response code="400">Requisição inválida.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.ObtemUsuarios">
+            <summary>
+            Obtém todos os usuários.
+            </summary>
+            <returns>Retorna uma lista de usuários.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.ObtemUsuarioPorAtributos(BibliotecaAPI.Dtos.Request.SearchUsuarioDto)">
+            <summary>
+            Obtém usuários por atributos.
+            </summary>
+            <param name="searchUsuarioDto">Os atributos para filtrar os usuários.</param>
+            <returns>Retorna uma lista de usuários que correspondem aos atributos fornecidos.</returns>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.ObtemUsuario(System.Int32)">
+            <summary>
+            Obtém um usuário pelo ID.
+            </summary>
+            <param name="id">ID do usuário.</param>
+            <returns>Retorna o usuário com o ID especificado.</returns>
+            <response code="200">Usuário encontrado.</response>
+            <response code="404">Usuário não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.ObtemHistoricoDeEmprestimosDoUsuario(System.Int32)">
+            <summary>
+            Obtém o histórico de empréstimos de um usuário pelo ID.
+            </summary>
+            <param name="id">ID do usuário.</param>
+            <returns>Retorna uma lista de empréstimos do usuário especificado.</returns>
+            <response code="200">Histórico de empréstimos encontrado.</response>
+            <response code="404">Usuário não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.ObtemHistoricoDeMultasDoUsuario(System.Int32)">
+            <summary>
+            Obtém o histórico de multas de um usuário pelo ID.
+            </summary>
+            <param name="id">ID do usuário.</param>
+            <returns>Retorna uma lista de multas do usuário especificado.</returns>
+            <response code="200">Histórico de multas encontrado.</response>
+            <response code="404">Usuário não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.AtualizaUsuario(System.Int32,BibliotecaAPI.Dtos.Request.UpdateUsuarioDto)">
+            <summary>
+            Atualiza um usuário.
+            </summary>
+            <param name="id">ID do usuário a ser atualizado.</param>
+            <param name="usuarioDto">Os dados do usuário a serem atualizados.</param>
+            <returns>Retorna NoContent se o usuário foi atualizado com sucesso.</returns>
+            <response code="204">Usuário atualizado com sucesso.</response>
+            <response code="400">Requisição inválida.</response>
+            <response code="404">Usuário não encontrado.</response>
+        </member>
+        <member name="M:BibliotecaAPI.Controllers.UsuarioController.ExcluiUsuario(System.Int32)">
+            <summary>
+            Exclui um usuário.
+            </summary>
+            <param name="id">ID do usuário a ser excluído.</param>
+            <returns>Retorna NoContent se o usuário foi excluído com sucesso.</returns>
+            <response code="204">Usuário excluído com sucesso.</response>
+            <response code="404">Usuário não encontrado.</response>
+        </member>
+        <member name="T:BibliotecaAPI.Migrations.createAllTables">
+            <inheritdoc />
+        </member>
+        <member name="M:BibliotecaAPI.Migrations.createAllTables.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BibliotecaAPI.Migrations.createAllTables.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BibliotecaAPI.Migrations.createAllTables.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

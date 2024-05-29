@@ -1,4 +1,5 @@
 ﻿using BibliotecaAPI.Dtos.Request;
+using BibliotecaAPI.Dtos.Response;
 using BibliotecaAPI.Exceptions;
 using BibliotecaAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +24,18 @@ public class EmprestimoController : ControllerBase
         _multaService = multaService;
     }
 
+    /// <summary>
+    /// Cria um novo empréstimo.
+    /// </summary>
+    /// <param name="emprestimoDto">Os dados do empréstimo a ser criado.</param>
+    /// <returns>Retorna o empréstimo criado.</returns>
+    /// <response code="201">Empréstimo criado com sucesso.</response>
+    /// <response code="400">Requisição inválida ou usuário com multas pendentes ou limite de empréstimos atingido.</response>
+    /// <response code="404">Usuário ou exemplar não encontrado.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(ReadEmprestimoDto), 201)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 404)]
     public async Task<IActionResult> CriaEmprestimo([FromBody] CreateEmprestimoDto emprestimoDto)
     {
         try
@@ -44,21 +56,42 @@ public class EmprestimoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém todos os empréstimos.
+    /// </summary>
+    /// <returns>Lista de empréstimos.</returns>
+    /// <response code="200">Retorna a lista de empréstimos.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<ReadEmprestimoDto>), 200)]
     public async Task<IActionResult> ObtemEmprestimos()
     {
         var emprestimosDtoResponse = await _emprestimoService.GetEmprestimos();
         return Ok(emprestimosDtoResponse);
     }
 
+    /// <summary>
+    /// Obtém todas as renovações dos empréstimos.
+    /// </summary>
+    /// <returns>Lista de renovações.</returns>
+    /// <response code="200">Retorna a lista de renovações.</response>
     [HttpGet("Renovacoes/")]
+    [ProducesResponseType(typeof(IEnumerable<ReadRenovacaoDto>), 200)]
     public async Task<IActionResult> ObtemRenovacoesDosEmprestimos()
     {
         var renovacaoResponse = await _renovacaoService.GetRenovacoes();
         return Ok(renovacaoResponse);
     }
 
+    /// <summary>
+    /// Obtém um empréstimo pelo ID.
+    /// </summary>
+    /// <param name="id">ID do empréstimo.</param>
+    /// <returns>O empréstimo solicitado.</returns>
+    /// <response code="200">Retorna o empréstimo solicitado.</response>
+    /// <response code="404">Empréstimo não encontrado.</response>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(ReadEmprestimoDto), 200)]
+    [ProducesResponseType(typeof(string), 404)]
     public async Task<IActionResult> ObtemEmprestimo(int id)
     {
         try
@@ -72,7 +105,16 @@ public class EmprestimoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém a multa de um empréstimo pelo ID.
+    /// </summary>
+    /// <param name="id">ID do empréstimo.</param>
+    /// <returns>Multa do empréstimo.</returns>
+    /// <response code="200">Retorna multa.</response>
+    /// <response code="404">Empréstimo não encontrado ou emprestimo não possui multa.</response>
     [HttpGet("{id}/Multas")]
+    [ProducesResponseType(typeof(IEnumerable<ReadMultaDto>), 200)]
+    [ProducesResponseType(typeof(string), 404)]
     public async Task<IActionResult> ObtemMultasDoEmprestimo(int id)
     {
         try
@@ -90,7 +132,17 @@ public class EmprestimoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Devolve um empréstimo.
+    /// </summary>
+    /// <param name="id">ID do empréstimo.</param>
+    /// <response code="204">Empréstimo devolvido com sucesso.</response>
+    /// <response code="200">Empréstimo devolvido com sucesso mas tem multa pendente</response>
+    /// <response code="404">Empréstimo não encontrado.</response>
     [HttpPost("{id}/Devolver")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(string), 404)]
     public async Task<IActionResult> DevolveEmprestimo(int id)
     {
         try
@@ -108,7 +160,18 @@ public class EmprestimoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Renova um empréstimo.
+    /// </summary>
+    /// <param name="id">ID do empréstimo.</param>
+    /// <returns>Retorna a renovação criada.</returns>
+    /// <response code="200">Renovação criada com sucesso.</response>
+    /// <response code="400">Requisição inválida ou emprestimo atingiu o limite de renovações.</response>
+    /// <response code="404">Empréstimo não encontrado.</response>
     [HttpPost("{id}/Renovar")]
+    [ProducesResponseType(typeof(ReadRenovacaoDto), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 404)]
     public async Task<IActionResult> RenovaEmprestimo(int id)
     {
         try
@@ -126,14 +189,26 @@ public class EmprestimoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém as renovações de um empréstimo pelo ID.
+    /// </summary>
+    /// <param name="id">ID do empréstimo.</param>
+    /// <returns>Lista de renovações do empréstimo.</returns>
+    /// <response code="200">Retorna a lista de renovações.</response>
     [HttpGet("{id}/Renovacoes")]
+    [ProducesResponseType(typeof(IEnumerable<ReadRenovacaoDto>), 200)]
     public async Task<IActionResult> ObtemRenovacoesDoEmprestimo(int id)
     {
         var renovacaoResponse = await _renovacaoService.GetRenovacoesByEmprestimo(id);
         return Ok(renovacaoResponse);
     }
 
+    /// <summary>
+    /// Atualiza os status de empréstimos atrasados.
+    /// </summary>
+    /// <response code="204">Status de empréstimos atrasados atualizados com sucesso.</response>
     [HttpPut("AtualizarEmprestimosAtrasados/")]
+    [ProducesResponseType(204)]
     public async Task<IActionResult> AtualizaEmprestimosAtrasados()
     {
         await _emprestimoService.UpdateEmprestimosAtrasados();

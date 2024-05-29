@@ -120,3 +120,5 @@ C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\bin\
 C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\bin\Debug\net8.0\FluentValidation.dll
 C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
 C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\bin\Debug\net8.0\BibliotecaAPI.xml
+C:\Users\mateusDizeu\source\repos\GerenciamentoBiblioteca-API\BibliotecaAPI\obj\Debug\net8.0\BibliotecaAPI.xml
