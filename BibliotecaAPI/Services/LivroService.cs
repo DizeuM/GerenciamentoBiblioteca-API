@@ -79,48 +79,21 @@ public class LivroService : ILivroService
 
         var livros = await query.ToListAsync();
 
-        var livrosDto = livros.Select(livro =>
-        {
-            var livroDto = _mapper.Map<ReadLivroDto>(livro);
-
-            var qntExemplarDisponivel = livro.Exemplares.Where(e => e.Status == ExemplarStatus.Disponivel).Count();
-            livroDto.QntExemplarDisponivel = qntExemplarDisponivel;
-
-            return livroDto;
-
-        }).ToList();
-
-        return livrosDto;
+        return _mapper.Map<List<ReadLivroDto>>(livros);
     }
 
     public async Task<IEnumerable<ReadLivroDto>> GetLivros()
     {
         var livros = await _context.Livros.Include(e => e.Exemplares).ToListAsync();
 
-        var livrosDto = livros.Select(livro =>
-        {
-            var livroDto = _mapper.Map<ReadLivroDto>(livro);
-
-            var qntExemplarDisponivel = livro.Exemplares.Where(e => e.Status == ExemplarStatus.Disponivel).Count();
-            livroDto.QntExemplarDisponivel = qntExemplarDisponivel;
-
-            return livroDto;
-
-        }).ToList();
-
-        return livrosDto;
+        return _mapper.Map<List<ReadLivroDto>>(livros);
     }
 
     public async Task<ReadLivroDto> GetLivroById(int id)
     {
         var livro = await GetLivroByIdOrThrowError(id);
 
-        var livroDto = _mapper.Map<ReadLivroDto>(livro);
-
-        var qntExemplarDisponivel = livro.Exemplares.Where(e => e.Status == ExemplarStatus.Disponivel).Count();
-        livroDto.QntExemplarDisponivel = qntExemplarDisponivel;
-
-        return livroDto;
+        return _mapper.Map<ReadLivroDto>(livro);
     }
 
     public async Task UpdateLivro(int id, UpdateLivroDto livroDto)

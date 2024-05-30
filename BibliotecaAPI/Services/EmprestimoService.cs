@@ -15,12 +15,14 @@ public class EmprestimoService : IEmprestimoService
     private readonly BibliotecaContext _context;
     private readonly IMapper _mapper;
     private readonly IUsuarioService _usuarioService;
+    private readonly IExemplarService _exemplarService;
 
-    public EmprestimoService(BibliotecaContext context, IMapper mapper, IUsuarioService usuarioService)
+    public EmprestimoService(BibliotecaContext context, IMapper mapper, IUsuarioService usuarioService, IExemplarService exemplarService)
     {
         _context = context;
         _mapper = mapper;
         _usuarioService = usuarioService;
+        _exemplarService = exemplarService;
     }
 
     public async Task<Emprestimo> GetEmprestimoByIdOrThrowError(int id)
@@ -46,25 +48,9 @@ public class EmprestimoService : IEmprestimoService
 
     public async Task<ReadEmprestimoDto> CreateEmprestimo(CreateEmprestimoDto emprestimoDto, int funcionarioId)
     {
-        var usuario = await _usuarioService.GetUsuarioByIdOrThrowError(emprestimoDto.UsuarioId);
+        await _usuarioService.UsuarioHasNoIssues(emprestimoDto.UsuarioId);
 
-        int numMultasUsuario = usuario.Multas.Count(m => m.Status == MultaStatus.Pendente);
-        if (numMultasUsuario > 0)
-        {
-            throw new BadRequestException("Usuário tem multas pendentes.");
-        }
-
-        int numEmprestimosUsuario = usuario.Emprestimos.Count(e => e.Status == EmprestimoStatus.EmAndamento || e.Status == EmprestimoStatus.Atrasado);
-        if (numEmprestimosUsuario >= 3)
-        {
-            throw new BadRequestException("Limite de empréstimos do usuário atingido.");
-        }
-
-        var exemplarDisponivel = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId && e.Status == ExemplarStatus.Disponivel);
-        if (exemplarDisponivel == null)
-        {
-            throw new BadRequestException("Exemplar não disponível para empréstimo.");
-        }
+        var exemplar = await _exemplarService.ExemplarDisponivel(emprestimoDto.ExemplarId);
 
         var emprestimo = new Emprestimo
         {
@@ -78,7 +64,6 @@ public class EmprestimoService : IEmprestimoService
 
         await _context.Emprestimos.AddAsync(emprestimo);
 
-        var exemplar = await _context.Exemplares.FirstOrDefaultAsync(e => e.Id == emprestimoDto.ExemplarId);
         exemplar.Status = ExemplarStatus.Emprestado;
 
         await _context.SaveChangesAsync();

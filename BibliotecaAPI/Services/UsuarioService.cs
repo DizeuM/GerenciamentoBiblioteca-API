@@ -5,6 +5,7 @@ using BibliotecaAPI.Dtos.Response;
 using BibliotecaAPI.Data.Models;
 using BibliotecaAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using BibliotecaAPI.Enums;
 
 public class UsuarioService : IUsuarioService
 {
@@ -25,6 +26,22 @@ public class UsuarioService : IUsuarioService
         }
 
         return usuario;
+    }
+
+    public async Task UsuarioHasNoIssues(int id)
+    {
+        var usuario = await GetUsuarioByIdOrThrowError(id);
+
+        if (usuario.Multas.Any(m => m.Status == MultaStatus.Pendente))
+        {
+            throw new BadRequestException("Usuário tem multas pendentes.");
+        }
+
+        int numEmprestimosUsuario = usuario.Emprestimos.Count(e => e.Status != EmprestimoStatus.Devolvido);
+        if (numEmprestimosUsuario >= 3)
+        {
+            throw new BadRequestException("Limite de empréstimos do usuário atingido.");
+        }
     }
 
     public async Task<ReadUsuarioDto> CreateUsuario(CreateUsuarioDto usuarioDto)

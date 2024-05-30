@@ -95,12 +95,7 @@ public class MultaService : IMultaService
                 }
             }
 
-            float valorMulta = diasUteisAtrasados * 1;
-
-            if (valorMulta > emprestimo.Exemplar.Livro.Valor * 2)
-            {
-                valorMulta = emprestimo.Exemplar.Livro.Valor * 2;
-            }
+            double valorMulta = Math.Round(Math.Min(diasUteisAtrasados * 1, emprestimo.Exemplar.Livro.Valor * 2), 2);
 
             var multa = await _context.Multas.FirstOrDefaultAsync(m => m.EmprestimoId == emprestimo.Id);
 

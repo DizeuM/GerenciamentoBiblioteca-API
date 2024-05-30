@@ -8,5 +8,5 @@ public class ReadMultaDto
     public string DiasAtrasados { get; set; }
     public DateTime InicioMulta { get; set; }
     public DateTime? FimMulta { get; set; }
-    public int Status { get; set; }
+    public double Status { get; set; }
 }

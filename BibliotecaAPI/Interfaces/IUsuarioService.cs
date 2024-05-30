@@ -6,6 +6,7 @@ using BibliotecaAPI.Dtos.Request;
 public interface IUsuarioService
 {
     Task<Usuario> GetUsuarioByIdOrThrowError(int id);
+    Task UsuarioHasNoIssues(int id);
     Task<ReadUsuarioDto> CreateUsuario(CreateUsuarioDto usuarioDto);
     Task<IEnumerable<ReadUsuarioDto>> SearchUsuarioByAttributes(SearchUsuarioDto searchUsuarioDto);
     Task<IEnumerable<ReadUsuarioDto>> GetAllUsuarios();

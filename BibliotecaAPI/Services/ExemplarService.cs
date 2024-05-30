@@ -31,6 +31,17 @@ public class ExemplarService : IExemplarService
 
         return exemplar;
     }
+    public async Task<Exemplar> ExemplarDisponivel(int id)
+    {
+        var exemplar = await GetExemplarByIdOrThrowError(id);
+
+        if (exemplar.Status != ExemplarStatus.Disponivel)
+        {
+            throw new BadRequestException("Exemplar não disponível para empréstimo.");
+        }
+
+        return exemplar;
+    }
 
     public async Task<IEnumerable<ReadExemplarDto>> GetLivroExemplares(int livroId)
     {
