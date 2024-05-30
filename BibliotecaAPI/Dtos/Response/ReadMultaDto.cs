@@ -1,4 +1,6 @@
-﻿namespace BibliotecaAPI.Dtos.Response;
+﻿using BibliotecaAPI.Enums;
+
+namespace BibliotecaAPI.Dtos.Response;
 
 public class ReadMultaDto
 {
@@ -8,5 +10,5 @@ public class ReadMultaDto
     public string DiasAtrasados { get; set; }
     public DateTime InicioMulta { get; set; }
     public DateTime? FimMulta { get; set; }
-    public double Status { get; set; }
+    public MultaStatus Status { get; set; }
 }
